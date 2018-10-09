@@ -57,6 +57,9 @@ class ExpenseAddController extends AbstractController
         if(!isset($category_of_expense_id) || empty($category_of_expense_id)) {
           return $this->json(array('status' => 'error', 'message' => 'Wrong expense\'s category value or you don\'t provide category of expense'));
         }
+        if($weight == "") {
+          $weight = null;
+        }
         $price = (float) $price;
         $expense = new Expense();
         $product = $this->getDoctrine()
