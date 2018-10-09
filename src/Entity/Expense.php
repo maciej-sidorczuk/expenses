@@ -48,11 +48,6 @@ class Expense
     private $quantity;
 
     /**
-     * @ORM\Column(type="float")
-     */
-    private $total_price;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Place")
      */
     private $place_id;
@@ -153,18 +148,6 @@ class Expense
     public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    public function getTotalPrice(): ?float
-    {
-        return $this->total_price;
-    }
-
-    public function setTotalPrice(float $total_price): self
-    {
-        $this->total_price = $total_price;
 
         return $this;
     }
