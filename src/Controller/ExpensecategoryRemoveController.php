@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\CategoryOfExpense;
+use Doctrine\DBAL\DBALException;
 
 class ExpensecategoryRemoveController extends AbstractController
 {
@@ -22,10 +23,16 @@ class ExpensecategoryRemoveController extends AbstractController
           if(!$categoryOfExpense) {
             return $this->json(array('status' => 'error', 'message' => 'Object not found'));
           } else {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($categoryOfExpense);
-            $entityManager->flush();
-            return $this->json(array('status' => 'ok'));
+              $entityManager = $this->getDoctrine()->getManager();
+            try {
+              $entityManager->remove($categoryOfExpense);
+              $entityManager->flush();
+              return $this->json(array('status' => 'ok'));
+            } catch(DBALException $e)) {
+              return $this->json(array('status' => 'error', 'message' => 'Cannot remove expense category because there are expenses which contain this category. Consider remove these expenses/keep this category for historic purpose/edit expense category for new one'));
+            }
+
+
           }
         } else {
           return $this->json(array('status' => 'error', 'message' => 'Incorrect parameters'));

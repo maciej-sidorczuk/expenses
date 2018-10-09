@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\TypeOfExpense;
+use Doctrine\DBAL\DBALException;
 
 class ExpensetypeRemoveController extends AbstractController
 {
@@ -23,9 +24,14 @@ class ExpensetypeRemoveController extends AbstractController
             return $this->json(array('status' => 'error', 'message' => 'Object not found'));
           } else {
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($typeOfExpense);
-            $entityManager->flush();
-            return $this->json(array('status' => 'ok'));
+            try {
+              $entityManager->remove($typeOfExpense);
+              $entityManager->flush();
+              return $this->json(array('status' => 'ok'));
+            } catch(DBALException $e) {
+              return $this->json(array('status' => 'error', 'message' => 'Cannot remove expense type because there are expenses which contain this type. Consider remove these expenses/keep this type for historic purpose/edit expense type for new one'));
+            }
+
           }
         } else {
           return $this->json(array('status' => 'error', 'message' => 'Incorrect parameters'));

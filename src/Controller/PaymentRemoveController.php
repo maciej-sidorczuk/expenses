@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\PaymentMethod;
+use Doctrine\DBAL\DBALException;
 
 class PaymentRemoveController extends AbstractController
 {
@@ -23,9 +24,14 @@ class PaymentRemoveController extends AbstractController
             return $this->json(array('status' => 'error', 'message' => 'Object not found'));
           } else {
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($paymentMethod);
-            $entityManager->flush();
-            return $this->json(array('status' => 'ok'));
+            try {
+              $entityManager->remove($paymentMethod);
+              $entityManager->flush();
+              return $this->json(array('status' => 'ok'));
+            } catch(DBALException $e) {
+              return $this->json(array('status' => 'error', 'message' => 'Cannot remove payment method because there are expenses which contain this method. Consider remove these expenses/keep this method for historic purpose/edit payment method for new one'));
+            }
+
           }
         } else {
           return $this->json(array('status' => 'error', 'message' => 'Incorrect parameters'));
