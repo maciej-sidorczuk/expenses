@@ -28,7 +28,7 @@ class ExpensecategoryRemoveController extends AbstractController
               $entityManager->remove($categoryOfExpense);
               $entityManager->flush();
               return $this->json(array('status' => 'ok'));
-            } catch(DBALException $e)) {
+            } catch(DBALException $e) {
               return $this->json(array('status' => 'error', 'message' => 'Cannot remove expense category because there are expenses which contain this category. Consider remove these expenses/keep this category for historic purpose/edit expense category for new one'));
             }
 
