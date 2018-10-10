@@ -19,6 +19,20 @@ class ExpenseRepository extends ServiceEntityRepository
         parent::__construct($registry, Expense::class);
     }
 
+    public function searchByParams($query_string, $values_to_add, $limit): array {
+      $entityManager = $this->getEntityManager();
+      file_put_contents('/var/www/mswydatki.pl/log.log', $query_string . "\n", FILE_APPEND);
+      file_put_contents('/var/www/mswydatki.pl/log2.log', print_r($values_to_add, true) . "\n", FILE_APPEND);
+      $query = $entityManager->createQuery($query_string);
+      foreach($values_to_add as $key => $value) {
+        $query->setParameter($key, $value);
+      }
+      if($limit) {
+        $query->setMaxResults($limit);
+      }
+      return $query->execute();
+    }
+
 //    /**
 //     * @return Expense[] Returns an array of Expense objects
 //     */
