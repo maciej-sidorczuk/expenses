@@ -138,6 +138,10 @@ class ExpenseShowController extends AbstractController
             $where .= 'p.description like \'%' . $description  . '%\' AND ';
           }
 
+          $comment = $request->request->get('comment');
+          if(isset($comment) && !empty($comment)) {
+            $where .= 'p.comment like \'%' . $comment  . '%\' AND ';
+          }
 
 
           if($where == '') {
