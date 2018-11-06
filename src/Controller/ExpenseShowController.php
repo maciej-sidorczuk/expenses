@@ -57,13 +57,19 @@ class ExpenseShowController extends AbstractController
           $values_to_add = array();
           $from_date = $request->request->get('from_date');
           if(isset($from_date) && !empty($from_date)) {
-            $where .= 'p.purchase_date >= :purchase_date_from AND ';
-            $values_to_add['purchase_date_from'] = $from_date;
+            $pattern = '/^\d{4}\-\d{2}\-\d{2}$/';
+            if(preg_match($pattern, $from_date)) {
+              $where .= 'p.purchase_date >= :purchase_date_from AND ';
+              $values_to_add['purchase_date_from'] = $from_date;
+            }
           }
           $to_date = $request->request->get('to_date');
           if(isset($to_date) && !empty($to_date)) {
-            $where .= 'p.purchase_date <= :purchase_date_to AND ';
-            $values_to_add['purchase_date_to'] = $to_date;
+            $pattern = '/^\d{4}\-\d{2}\-\d{2}$/';
+            if(preg_match($pattern, $to_date)) {
+              $where .= 'p.purchase_date <= :purchase_date_to AND ';
+              $values_to_add['purchase_date_to'] = $to_date;
+            }
           }
 
           $limit = $request->request->get('limit');
