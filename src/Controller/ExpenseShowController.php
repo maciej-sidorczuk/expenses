@@ -115,7 +115,11 @@ class ExpenseShowController extends AbstractController
             $where .= 'p.payment_method_id IN(' . $payments_string . ') AND ';
           }
 
-
+          $products = $request->request->get('product');
+          if(isset($products) && !empty($products)) {
+            $products_string = implode(',', $products);
+            $where .= 'p.product_id IN(' . $products_string . ') AND ';
+          }
 
 
 
