@@ -157,13 +157,15 @@ class ExpenseShowController extends AbstractController
 
 
           if($where == '') {
-            $repository = $this->getDoctrine()->getRepository(Expense::class);
-            $expenses = $repository->findAll();
+            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p';
+            $expenses = $this->getDoctrine()
+              ->getRepository(Expense::class)
+              ->searchAll($query_string);
             return $this->json(array('status' => 'ok', 'content' => $expenses));
           } else {
             $where = trim($where);
             $where = preg_replace("/\sAND$/", '', $where);
-            $query_string = 'SELECT p FROM App\Entity\Expense p WHERE ' . $where;
+            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p WHERE ' . $where;
             $expenses = $this->getDoctrine()
               ->getRepository(Expense::class)
               ->searchByParams($query_string, $values_to_add, $limit);
