@@ -103,6 +103,20 @@ class ExpenseShowController extends AbstractController
             $values_to_add['weight_max'] = $weight_max;
           }
 
+          $places = $request->request->get('place');
+          if(isset($places) && !empty($places)) {
+            $places_string = implode(',', $places);
+            $where .= 'p.place_id IN(' . $places_string . ') AND ';
+          }
+
+          $payments = $request->request->get('payment');
+          if(isset($payments) && !empty($payments)) {
+            $payments_string = implode(',', $payments);
+            $where .= 'p.payment_method_id IN(' . $payments_string . ') AND ';
+          }
+
+
+
 
 
           if($where == '') {
