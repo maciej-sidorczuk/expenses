@@ -133,6 +133,11 @@ class ExpenseShowController extends AbstractController
             $where .= 'p.category_of_expense_id IN(' . $category_of_expenses_string  . ') AND ';
           }
 
+          $description = $request->request->get('description');
+          if(isset($description) && !empty($description)) {
+            $where .= 'p.description like \'%' . $description  . '%\' AND ';
+          }
+
 
 
           if($where == '') {
