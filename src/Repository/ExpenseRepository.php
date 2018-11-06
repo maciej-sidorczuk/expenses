@@ -33,10 +33,15 @@ class ExpenseRepository extends ServiceEntityRepository
       return $query->execute();
     }
 
-    public function searchAll($query_string): array {
+    public function searchAll($query_string, $values_to_add = null): array {
       $entityManager = $this->getEntityManager();
       file_put_contents('/var/www/mswydatki.pl/log.log', $query_string . "\n", FILE_APPEND);
       $query = $entityManager->createQuery($query_string);
+      if(isset($values_to_add )) {
+        foreach($values_to_add as $key => $value) {
+          $query->setParameter($key, $value);
+        }
+      }
       return $query->execute();
     }
 

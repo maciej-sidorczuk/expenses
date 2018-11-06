@@ -53,6 +53,7 @@ class ExpenseShowController extends AbstractController
           }
         } else {
           $where = '';
+          $having = '';
           $values_to_add = array();
           $from_date = $request->request->get('from_date');
           if(isset($from_date) && !empty($from_date)) {
@@ -73,6 +74,24 @@ class ExpenseShowController extends AbstractController
             if(is_numeric($price_min)) {
               $where .= 'p.price >= :price_min AND ';
               $values_to_add['price_min'] = $price_min;
+            }
+          }
+
+          $total_price_min = $request->request->get('total_price_min');
+          if(isset($total_price_min) && !empty($total_price_min)) {
+            $total_price_min = str_replace(",", ".", $total_price_min);
+            if(is_numeric($total_price_min)) {
+              $having .= 'total_price >= :total_price_min AND ';
+              $values_to_add['total_price_min'] = $total_price_min;
+            }
+          }
+
+          $total_price_max = $request->request->get('total_price_max');
+          if(isset($total_price_max) && !empty($total_price_max)) {
+            $total_price_max = str_replace(",", ".", $total_price_max);
+            if(is_numeric($total_price_max)) {
+              $having .= 'total_price <= :total_price_max AND ';
+              $values_to_add['total_price_max'] = $total_price_max;
             }
           }
 
@@ -157,15 +176,31 @@ class ExpenseShowController extends AbstractController
 
 
           if($where == '') {
-            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p';
-            $expenses = $this->getDoctrine()
-              ->getRepository(Expense::class)
-              ->searchAll($query_string);
-            return $this->json(array('status' => 'ok', 'content' => $expenses));
+            if($having == '') {
+              $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p';
+              $expenses = $this->getDoctrine()
+                ->getRepository(Expense::class)
+                ->searchAll($query_string);
+              return $this->json(array('status' => 'ok', 'content' => $expenses));
+            } else {
+              $having = trim($having);
+              $having = preg_replace("/\sAND$/", '', $having);
+              $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p HAVING ' . $having ;
+              $expenses = $this->getDoctrine()
+                ->getRepository(Expense::class)
+                ->searchAll($query_string, $values_to_add);
+              return $this->json(array('status' => 'ok', 'content' => $expenses));
+            }
           } else {
             $where = trim($where);
             $where = preg_replace("/\sAND$/", '', $where);
-            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p WHERE ' . $where;
+            $where = ' WHERE ' . $where;
+            $having = trim($having);
+            $having = preg_replace("/\sAND$/", '', $having);
+            if($having != '') {
+              $having = ' HAVING ' . $having;
+            }
+            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p' . $where . $having;
             $expenses = $this->getDoctrine()
               ->getRepository(Expense::class)
               ->searchByParams($query_string, $values_to_add, $limit);
