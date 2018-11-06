@@ -69,14 +69,20 @@ class ExpenseShowController extends AbstractController
 
           $price_min = $request->request->get('price_min');
           if(isset($price_min) && !empty($price_min)) {
-            $where .= 'p.price >= :price_min AND ';
-            $values_to_add['price_min'] = $price_min;
+            $price_min = str_replace(",", ".", $price_min);
+            if(is_numeric($price_min)) {
+              $where .= 'p.price >= :price_min AND ';
+              $values_to_add['price_min'] = $price_min;
+            }
           }
 
           $price_max = $request->request->get('price_max');
           if(isset($price_max) && !empty($price_max)) {
-            $where .= 'p.price <= :price_max AND ';
-            $values_to_add['price_max'] = $price_max;
+            $price_max = str_replace(",", ".", $price_max);
+            if(is_numeric($price_max)) {
+              $where .= 'p.price <= :price_max AND ';
+              $values_to_add['price_max'] = $price_max;
+            }
           }
 
           $quantity_min = $request->request->get('quantity_min');
@@ -93,14 +99,20 @@ class ExpenseShowController extends AbstractController
 
           $weight_min = $request->request->get('weight_min');
           if(isset($weight_min) && !empty($weight_min)) {
-            $where .= 'p.weight >= :weight_min AND ';
-            $values_to_add['weight_min'] = $weight_min;
+            $weight_min = str_replace(",", ".", $weight_min);
+            if(is_numeric($weight_min)) {
+              $where .= 'p.weight >= :weight_min AND ';
+              $values_to_add['weight_min'] = $weight_min;
+            }
           }
 
           $weight_max = $request->request->get('weight_max');
           if(isset($weight_max) && !empty($weight_max)) {
-            $where .= 'p.weight <= :weight_max AND ';
-            $values_to_add['weight_max'] = $weight_max;
+            $weight_max = str_replace(",", ".", $weight_max);
+            if(is_numeric($weight_max)) {
+              $where .= 'p.weight <= :weight_max AND ';
+              $values_to_add['weight_max'] = $weight_max;
+            }
           }
 
           $places = $request->request->get('place');
