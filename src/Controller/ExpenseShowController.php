@@ -121,6 +121,12 @@ class ExpenseShowController extends AbstractController
             $where .= 'p.product_id IN(' . $products_string . ') AND ';
           }
 
+          $type_of_expenses = $request->request->get('expense_type');
+          if(isset($type_of_expenses) && !empty($type_of_expenses)) {
+            $type_of_expenses_string = implode(',', $type_of_expenses);
+            $where .= 'p.type_of_expense_id IN(' . $type_of_expenses_string  . ') AND ';
+          }
+
 
 
           if($where == '') {
