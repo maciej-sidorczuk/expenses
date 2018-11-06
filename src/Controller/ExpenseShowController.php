@@ -35,9 +35,9 @@ class ExpenseShowController extends AbstractController
             $comment = $expense->getComment();
             $category_of_expense_id = $expense->getCategoryOfExpenseId();
             $objects = array();
-            array_push($objects, array(
+            array_push($objects, array("0" => array(
               "id" => $id,
-              "date" => $date,
+              "purchaseDate" => $date,
               "product_id" => $product_id,
               "description" => $description,
               "price" => $price,
@@ -48,7 +48,7 @@ class ExpenseShowController extends AbstractController
               "type_of_expense_id" => $type_of_expense_id,
               "comment" => $comment,
               "category_of_expense_id" => $category_of_expense_id
-              ));
+              ), "total_price" => $quantity*$price));
             return $this->json(array('status' => 'ok', 'content' => $objects));
           }
         } else {
