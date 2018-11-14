@@ -12,7 +12,15 @@
       From date: <input type="text" name="from_date" id="datepicker1"><br />
       To date: <input type="text" name ="to_date" id="datepicker2"><br />
 	  Description: <input type="text" id="description" name="description"><br />
+	  Weight min: <input type="text" id="weight_min" name="weight_min"><br />
+	  Weight max: <input type="text" id="weight_max" name="weight_max"><br />
+	  Price min: <input type="text" id="price_min" name="price_min"><br />
+	  Price max: <input type="text" id="price_max" name="price_max"><br />
+	  Quantity min: <input type="text" id="quantity_min" name="quantity_min"><br />
+	  Quantity max: <input type="text" id="quantity_max" name="quantity_max"><br />
+	  Comment: <input type="text" id="comment" name="comment"><br />
       <input type="submit" name="Show" value="Show">
+	  
     </form>
 	<div id="result_append_section"></div>
     <script>
@@ -36,7 +44,28 @@
 			data.to_date = $("#datepicker2").val();
 		}
 		if($("#description").val() != "") {
-			description = $("#description").val();
+			data.description = $("#description").val();
+		}
+		if($("#weight_min").val() != "") {
+			data.weight_min = $("#weight_min").val();
+		}
+		if($("#weight_max").val() != "") {
+			data.weight_max = $("#weight_max").val();
+		}
+		if($("#price_min").val() != "") {
+			data.price_min = $("#price_min").val();
+		}
+		if($("#price_max").val() != "") {
+			data.price_max = $("#price_max").val();
+		}
+		if($("#quantity_min").val() != "") {
+			data.quantity_min = $("#quantity_min").val();
+		}
+		if($("#quantity_max").val() != "") {
+			data.quantity_max = $("#quantity_max").val();
+		}
+		if($("#comment").val() != "") {
+			data.comment = $("#comment").val();
 		}
 		$.ajax({
 		  method: "POST",
