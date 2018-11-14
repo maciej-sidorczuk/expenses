@@ -1,0 +1,85 @@
+<html>
+  <head>
+  <link rel="stylesheet" href="{{asset('css/datepicker/jquery-ui.css')}}">
+  <link rel="stylesheet" href="{{asset('css/datepicker/style.css')}}">
+  </head>
+  <body>
+    <h1>Your expenses</h1>
+    <p>Please select criteria in order to display expenses</p>
+    <script src="{{ asset('js/datepicker/jquery-1.12.4.js') }}"></script>
+    <script src="{{ asset('js/datepicker/jquery-ui.js') }}"></script>
+    <form id="criteria_form">
+      From date: <input type="text" name="from_date" id="datepicker1"><br />
+      To date: <input type="text" name ="to_date" id="datepicker2"><br />
+	  Description: <input type="text" id="description" name="description"><br />
+      <input type="submit" name="Show" value="Show">
+    </form>
+	<div id="result_append_section"></div>
+    <script>
+      $( function() {
+        $( "#datepicker1" ).datepicker();
+          $( "#datepicker1" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      } );
+      $( function() {
+        $( "#datepicker2" ).datepicker();
+          $( "#datepicker2" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      } );
+    </script>
+    <script>
+      $("#criteria_form").submit(function(e){
+        e.preventDefault();
+		var data = {};
+		if($("#datepicker1").val() != "") {
+			data.from_date = $("#datepicker1").val();
+		}
+		if($("#datepicker2").val() != "") {
+			data.to_date = $("#datepicker2").val();
+		}
+		if($("#description").val() != "") {
+			description = $("#description").val();
+		}
+		$.ajax({
+		  method: "POST",
+		  url: "/expense/show",
+		  data
+		})
+		.done(function( msg ) {
+			if(msg.status == "ok") {
+				var results = msg.content;
+				var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date</th><th>Product</th><th>Description</th><th>Weight</th><th>Price</th><th>Quantity</th><th>Total price</th><th>Type of expense</th><th>Payment method</th><th>Category of expense</th><th>Place</th><th>Comment</th></tr>";
+				for(var i = 0; i < results .length; i++) {				
+					var id = results[i][0].id;				
+					var date = results[i][0].purchaseDate;
+					var format_date = date.substring(0, 10);
+					var product_id = results[i][0].productId.id;
+					var product = results[i][0].productId.name;				
+					var description = results[i][0].description;
+					var weight = results[i][0].weight;
+					var price = results[i][0].price;
+					var quantity = results[i][0].quantity;
+					var total_price = results[i].total_price;
+					var type_of_expense_id = results[i][0].typeOfExpenseId.id;
+					var type_of_expense = results[i][0].typeOfExpenseId.name;
+					var payment_method_id = results[i][0].paymentMethodId.id;
+					var payment_method= results[i][0].paymentMethodId.name;
+					var category_of_expense_id = results[i][0].categoryOfExpenseId.id;
+					var category_of_expense = results[i][0].categoryOfExpenseId.name;
+					var place_id = results[i][0].placeId.id;
+					var place = results[i][0].placeId.name;
+					var comment = results[i][0].comment;
+					var counter = i + 1;
+					string_result += "<tr><td>" + counter  + "</td><td>" + format_date + "</td><td>" + product + "</td><td>" + description + "</td><td>" + weight + "</td><td>" + price + "</td><td>" + quantity + "</td><td>" + total_price + "</td><td>" + type_of_expense + "</td><td>" + payment_method + "</td><td>" + category_of_expense + "</td><td>" + place + "</td><td>" + comment + "</td></tr>";
+					
+				}
+				string_result += "</tbody></table>";
+				$("#result_append_section").empty();
+				$(string_result).appendTo("#result_append_section");
+			}
+		});
+		
+		
+		
+      });
+    </script>
+  </body>
+</html>
