@@ -19,6 +19,28 @@
 	  Quantity min: <input type="text" id="quantity_min" name="quantity_min"><br />
 	  Quantity max: <input type="text" id="quantity_max" name="quantity_max"><br />
 	  Comment: <input type="text" id="comment" name="comment"><br />
+	  Products: <br />
+	  {% for product in products %}
+			<input type="checkbox" name="product[]" value="{{ product.id }}" > {{ product.name }}  <br />
+	  {% endfor %}
+	  Type of expense: <br />
+	  {% for type in expenseType %}
+			<input type="checkbox" name="expense_type[]" value="{{ type.id }}" > {{ type.name }}  <br />
+	  {% endfor %}
+	  Payment Method: <br />
+	  {% for payment in paymentMethod %}
+			<input type="checkbox" name="payment[]" value="{{ payment.id }}" > {{ payment.name }}  <br />
+	  {% endfor %}
+	  Expense Category: <br />
+	  {% for expenseCat in expenseCategory %}
+			<input type="checkbox" name="expense_category[]" value="{{ expenseCat.id }}" > {{ expenseCat.name }}  <br />
+	  {% endfor %}
+	  Purchase Place: <br />
+	  {% for place in purchasePlace %}
+			<input type="checkbox" name="place[]" value="{{ place.id }}" > {{ place.name }}  <br />
+	  {% endfor %}
+	  
+			
       <input type="submit" name="Show" value="Show">
 	  
     </form>
@@ -67,6 +89,32 @@
 		if($("#comment").val() != "") {
 			data.comment = $("#comment").val();
 		}
+		var products_checkboxes= new Array();
+		$.each($("input[name='product[]']:checked"), function() {
+			products_checkboxes.push($(this).val());
+		});
+		data.product = products_checkboxes;
+		var expensetype_checkboxes= new Array();
+		$.each($("input[name='expense_type[]']:checked"), function() {
+			expensetype_checkboxes.push($(this).val());
+		});
+		data.expense_type = expensetype_checkboxes;
+		var paymentMethod_checkboxes= new Array();
+		$.each($("input[name='payment[]']:checked"), function() {
+			paymentMethod_checkboxes.push($(this).val());
+		});
+		data.payment = paymentMethod_checkboxes;
+		var expenseCategory_checkboxes= new Array();
+		$.each($("input[name='expense_category[]']:checked"), function() {
+			expenseCategory_checkboxes.push($(this).val());
+		});
+		data.expense_category = expenseCategory_checkboxes;
+		var purchasePlace_checkboxes= new Array();
+		$.each($("input[name='place[]']:checked"), function() {
+			purchasePlace_checkboxes.push($(this).val());
+		});
+		data.place = purchasePlace_checkboxes;
+		
 		$.ajax({
 		  method: "POST",
 		  url: "/expense/show",
