@@ -5,6 +5,7 @@
   </head>
   <body>
     <h1>Your expenses</h1>
+	<h2>Search filter</h2>	
     <p>Please select criteria in order to display expenses</p>
     <script src="{{ asset('js/datepicker/jquery-1.12.4.js') }}"></script>
     <script src="{{ asset('js/datepicker/jquery-ui.js') }}"></script>
@@ -53,6 +54,10 @@
       $( function() {
         $( "#datepicker2" ).datepicker();
           $( "#datepicker2" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      } );
+	  $( function() {
+        $( "#datepicker3" ).datepicker();
+          $( "#datepicker3" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
       } );
     </script>
     <script>
@@ -158,5 +163,85 @@
 		
       });
     </script>
+	<div id="create_new">
+		<h2>Create expense</h2>
+		<form id="create_expense">
+			Purchase date: <input type="text" name="create_purchase_date" id="datepicker3"><br />
+			Description: <input type="text" id="create_description" name="create_description"><br />
+			Weight: <input type="text" id="create_weight" name="create_weight"><br />
+			Price: <input type="text" id="create_price" name="create_price"><br />
+			Quantity: <input type="text" id="create_quantity" name="create_quantity"><br />
+			Comment: <input type="text" id="create_comment" name="create_comment"><br />
+			Start type product's name: <input type="create_product" name="create_product" id="create_product">
+			<select id="select_product">
+				<option value="0">Create new</option>
+				{% for product in products %}
+					<option value="{{ product.id }}">{{ product.name }}</option>
+				{% endfor %}
+			</select><br />	
+			Start type type expense: <input type="create_type_expense" name="create_type_expense" id="create_type_expense">
+			<select id="select_type_expense">
+				<option value="0">Create new</option>
+				{% for type in expenseType %}
+					<option value="{{ type.id }}">{{ type.name }}</option>
+				{% endfor %}
+			</select><br />
+			Start type payment method: <input type="create_payment_method" name="create_payment_method" id="create_payment_method">
+			<select id="select_payment_method">
+				<option value="0">Create new</option>
+				{% for payment in paymentMethod %}
+					<option value="{{ payment.id }}">{{ payment.name }}</option>
+				{% endfor %}
+			</select><br />
+			Start type expense category: <input type="create_expense_category" name="create_expense_category" id="create_expense_category">
+			<select id="select_expense_category">
+				<option value="0">Create new</option>
+				{% for expenseCat in expenseCategory %}
+					<option value="{{ expenseCat.id }}">{{ expenseCat.name }}</option>
+				{% endfor %}
+			</select><br />
+			Start type purchase place: <input type="create_purchase_place" name="create_purchase_place" id="create_purchase_place">
+			<select id="select_purchase_place">
+				<option value="0">Create new</option>
+				{% for place in purchasePlace %}
+					<option value="{{ place.id }}">{{ place.name }}</option>
+				{% endfor %}
+			</select><br />
+		</form>
+	</div>
+	
+	<script>
+		var product_list = $('#select_product').html();
+		$("#create_product").keypress(function(){
+			var product_string_name = $("#create_product").val();
+			if(product_string_name.length > 1) {
+				$.ajax({
+					  method: "POST",
+					  url: "/product/search",
+					  data : {name : $("#create_product").val()}
+				}).done(function(msg){
+					if(msg.status == "ok") {
+						var results = msg.content;
+						$('#select_product').empty();
+						$( '<option value="0">Create new</option>' ).appendTo( "#select_product" );
+						for(var i = 0; i < results.length; i++) {
+							var id = results[i].id;				
+							var productName = results[i].name;
+							$( '<option value="' + id + '">' + productName + '</option>' ).appendTo( "#select_product" );
+						}
+					}
+				});
+			}					
+		});
+		$("#select_product").change(function(){
+			$('#create_product').val($('#select_product option:selected').text());
+		});	
+		$('#create_product').on('input', function(){
+			if($("#create_product").val() == "") {
+					$('#select_product').html(product_list);
+			}	
+		});	
+	</script>
+	
   </body>
 </html>

@@ -19,6 +19,13 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    public function searchByString($query_string): array {
+      $entityManager = $this->getEntityManager();
+      file_put_contents('/var/www/mswydatki.pl/log22.log', $query_string . "\n", FILE_APPEND);
+      $query = $entityManager->createQuery($query_string);
+      return $query->execute();
+    }
+
 //    /**
 //     * @return Product[] Returns an array of Product objects
 //     */
