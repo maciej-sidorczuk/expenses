@@ -210,165 +210,48 @@
       <input type="submit" name="Create" value="Create">
 		</form>
 	</div>
-
-  <!-- TODO make below scripts in function -->
-	<script>
-		var product_list = $('#select_product').html();
-		$("#create_product").keypress(function(){
-			var product_string_name = $("#create_product").val();
-			if(product_string_name.length > 1) {
-				$.ajax({
-					  method: "POST",
-					  url: "/product/search",
-					  data : {name : $("#create_product").val()}
-				}).done(function(msg){
-					if(msg.status == "ok") {
-						var results = msg.content;
-						$('#select_product').empty();
-						$( '<option value="0">Create new</option>' ).appendTo( "#select_product" );
-						for(var i = 0; i < results.length; i++) {
-							var id = results[i].id;
-							var productName = results[i].name;
-							$( '<option value="' + id + '">' + productName + '</option>' ).appendTo( "#select_product" );
-						}
-					}
-				});
-			}
-		});
-		$("#select_product").change(function(){
-			$('#create_product').val($('#select_product option:selected').text());
-		});
-		$('#create_product').on('input', function(){
-			if($("#create_product").val() == "") {
-          //TODO take list from server. Don't waste browser memory? Check what would be faster.
-					$('#select_product').html(product_list);
-			}
-		});
-    var payment_list = $('#select_payment_method').html();
-		$("#create_payment_method").keypress(function(){
-			var payment_string_name = $("#create_payment_method").val();
-			if(payment_string_name.length > 1) {
-				$.ajax({
-					  method: "POST",
-					  url: "/payment/search",
-					  data : {name : $("#create_payment_method").val()}
-				}).done(function(msg){
-					if(msg.status == "ok") {
-						var results = msg.content;
-						$('#select_payment_method').empty();
-						$( '<option value="0">Create new</option>' ).appendTo( "#select_payment_method" );
-						for(var i = 0; i < results.length; i++) {
-							var id = results[i].id;
-							var paymentName = results[i].name;
-							$( '<option value="' + id + '">' + paymentName + '</option>' ).appendTo( "#select_payment_method" );
-						}
-					}
-				});
-			}
-		});
-		$("#select_payment_method").change(function(){
-			$('#create_payment_method').val($('#select_payment_method option:selected').text());
-		});
-		$('#create_payment_method').on('input', function(){
-			if($("#create_payment_method").val() == "") {
-          //TODO take list from server. Don't waste browser memory? Check what would be faster.
-					$('#select_payment_method').html(payment_list);
-			}
-		});
-    var place_list = $('#select_purchase_place').html();
-		$("#create_purchase_place").keypress(function(){
-			var place_string_name = $("#create_purchase_place").val();
-			if(place_string_name.length > 1) {
-				$.ajax({
-					  method: "POST",
-					  url: "/place/search",
-					  data : {name : $("#create_purchase_place").val()}
-				}).done(function(msg){
-					if(msg.status == "ok") {
-						var results = msg.content;
-						$('#select_purchase_place').empty();
-						$( '<option value="0">Create new</option>' ).appendTo( "#select_purchase_place" );
-						for(var i = 0; i < results.length; i++) {
-							var id = results[i].id;
-							var placeName = results[i].name;
-							$( '<option value="' + id + '">' + placeName + '</option>' ).appendTo( "#select_purchase_place" );
-						}
-					}
-				});
-			}
-		});
-		$("#select_purchase_place").change(function(){
-			$('#create_purchase_place').val($('#select_purchase_place option:selected').text());
-		});
-		$('#create_purchase_place').on('input', function(){
-			if($("#create_purchase_place").val() == "") {
-          //TODO take list from server. Don't waste browser memory? Check what would be faster.
-					$('#select_purchase_place').html(place_list);
-			}
-		});
-    var expensecategory_list = $('#select_expense_category').html();
-		$("#create_expense_category").keypress(function(){
-			var expensecategory_string_name = $("#create_expense_category").val();
-			if(expensecategory_string_name.length > 1) {
-				$.ajax({
-					  method: "POST",
-					  url: "/expensecategory/search",
-					  data : {name : $("#create_expense_category").val()}
-				}).done(function(msg){
-					if(msg.status == "ok") {
-						var results = msg.content;
-						$('#select_expense_category').empty();
-						$( '<option value="0">Create new</option>' ).appendTo( "#select_expense_category" );
-						for(var i = 0; i < results.length; i++) {
-							var id = results[i].id;
-							var expensecateogryName = results[i].name;
-							$( '<option value="' + id + '">' + expensecateogryName + '</option>' ).appendTo( "#select_expense_category" );
-						}
-					}
-				});
-			}
-		});
-		$("#select_expense_category").change(function(){
-			$('#create_expense_category').val($('#select_expense_category option:selected').text());
-		});
-		$('#create_expense_category').on('input', function(){
-			if($("#create_expense_category").val() == "") {
-          //TODO take list from server. Don't waste browser memory? Check what would be faster.
-					$('#select_expense_category').html(expensecategory_list);
-			}
-		});
-    var expensetype_list = $('#select_type_expense').html();
-		$("#create_type_expense").keypress(function(){
-			var expensetype_string_name = $("#create_type_expense").val();
-			if(expensetype_string_name.length > 1) {
-				$.ajax({
-					  method: "POST",
-					  url: "/expensetype/search",
-					  data : {name : $("#create_type_expense").val()}
-				}).done(function(msg){
-					if(msg.status == "ok") {
-						var results = msg.content;
-						$('#select_type_expense').empty();
-						$( '<option value="0">Create new</option>' ).appendTo( "#select_type_expense" );
-						for(var i = 0; i < results.length; i++) {
-							var id = results[i].id;
-							var expensetypeName = results[i].name;
-							$( '<option value="' + id + '">' + expensetypeName + '</option>' ).appendTo( "#select_type_expense" );
-						}
-					}
-				});
-			}
-		});
-		$("#select_type_expense").change(function(){
-			$('#create_type_expense').val($('#select_type_expense option:selected').text());
-		});
-		$('#create_type_expense').on('input', function(){
-			if($("#create_type_expense").val() == "") {
-          //TODO take list from server. Don't waste browser memory? Check what would be faster.
-					$('#select_type_expense').html(expensetype_list);
-			}
-		});
-	</script>
+  <script>
+    function searchElementbyAjax(elementName, searchUrl) {
+      var selectElement = "#select_" + elementName;
+      var createElement = "#create_" + elementName;
+      var element_list = $(selectElement).html();
+      $(createElement).keypress(function(){
+        var element_string_name = $(createElement).val();
+        if(element_string_name.length > 1) {
+          $.ajax({
+  					  method: "POST",
+  					  url: searchUrl,
+  					  data : {name : $(createElement).val()}
+  				}).done(function(msg){
+  					if(msg.status == "ok") {
+  						var results = msg.content;
+  						$(selectElement).empty();
+  						$( '<option value="0">Create new</option>' ).appendTo( selectElement );
+  						for(var i = 0; i < results.length; i++) {
+  							var id = results[i].id;
+  							var resultName = results[i].name;
+  							$( '<option value="' + id + '">' + resultName + '</option>' ).appendTo( selectElement );
+  						}
+  					}
+  				});
+        }
+      });
+      $(selectElement).change(function(){
+  			$(createElement).val($(selectElement + ' option:selected').text());
+  		});
+  		$(createElement).on('input', function(){
+  			if($(createElement).val() == "") {
+            //TODO take list from server. Don't waste browser memory? Check what would be faster.
+  					$(selectElement).html(element_list);
+  			}
+  		});
+    }
+    searchElementbyAjax('product', '/product/search');
+    searchElementbyAjax('payment_method', '/payment/search');
+    searchElementbyAjax('purchase_place', '/place/search');
+    searchElementbyAjax('expense_category', '/expensecategory/search');
+    searchElementbyAjax('type_expense', '/expensetype/search');
+  </script>
 
   <script>
     $("#create_expense").submit(function(e){
