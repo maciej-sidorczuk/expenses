@@ -21,7 +21,6 @@ class ProductRepository extends ServiceEntityRepository
 
     public function searchByString($query_string): array {
       $entityManager = $this->getEntityManager();
-      file_put_contents('/var/www/mswydatki.pl/log22.log', $query_string . "\n", FILE_APPEND);
       $query = $entityManager->createQuery($query_string);
       return $query->execute();
     }

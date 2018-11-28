@@ -5,7 +5,7 @@
   </head>
   <body>
     <h1>Your expenses</h1>
-	<h2>Search filter</h2>	
+	<h2>Search filter</h2>
     <p>Please select criteria in order to display expenses</p>
     <script src="{{ asset('js/datepicker/jquery-1.12.4.js') }}"></script>
     <script src="{{ asset('js/datepicker/jquery-ui.js') }}"></script>
@@ -40,10 +40,10 @@
 	  {% for place in purchasePlace %}
 			<input type="checkbox" name="place[]" value="{{ place.id }}" > {{ place.name }}  <br />
 	  {% endfor %}
-	  
-			
+
+
       <input type="submit" name="Show" value="Show">
-	  
+
     </form>
 	<div id="result_append_section"></div>
     <script>
@@ -119,7 +119,7 @@
 			purchasePlace_checkboxes.push($(this).val());
 		});
 		data.place = purchasePlace_checkboxes;
-		
+
 		$.ajax({
 		  method: "POST",
 		  url: "/expense/show",
@@ -129,12 +129,12 @@
 			if(msg.status == "ok") {
 				var results = msg.content;
 				var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date</th><th>Product</th><th>Description</th><th>Weight</th><th>Price</th><th>Quantity</th><th>Total price</th><th>Type of expense</th><th>Payment method</th><th>Category of expense</th><th>Place</th><th>Comment</th></tr>";
-				for(var i = 0; i < results .length; i++) {				
-					var id = results[i][0].id;				
+				for(var i = 0; i < results .length; i++) {
+					var id = results[i][0].id;
 					var date = results[i][0].purchaseDate;
 					var format_date = date.substring(0, 10);
 					var product_id = results[i][0].productId.id;
-					var product = results[i][0].productId.name;				
+					var product = results[i][0].productId.name;
 					var description = results[i][0].description;
 					var weight = results[i][0].weight;
 					var price = results[i][0].price;
@@ -151,16 +151,16 @@
 					var comment = results[i][0].comment;
 					var counter = i + 1;
 					string_result += "<tr><td>" + counter  + "</td><td>" + format_date + "</td><td>" + product + "</td><td>" + description + "</td><td>" + weight + "</td><td>" + price + "</td><td>" + quantity + "</td><td>" + total_price + "</td><td>" + type_of_expense + "</td><td>" + payment_method + "</td><td>" + category_of_expense + "</td><td>" + place + "</td><td>" + comment + "</td></tr>";
-					
+
 				}
 				string_result += "</tbody></table>";
 				$("#result_append_section").empty();
 				$(string_result).appendTo("#result_append_section");
 			}
 		});
-		
-		
-		
+
+
+
       });
     </script>
 	<div id="create_new">
@@ -178,7 +178,7 @@
 				{% for product in products %}
 					<option value="{{ product.id }}">{{ product.name }}</option>
 				{% endfor %}
-			</select><br />	
+			</select><br />
 			Start type type expense: <input type="create_type_expense" name="create_type_expense" id="create_type_expense">
 			<select id="select_type_expense">
 				<option value="0">Create new</option>
@@ -207,9 +207,11 @@
 					<option value="{{ place.id }}">{{ place.name }}</option>
 				{% endfor %}
 			</select><br />
+      <input type="submit" name="Create" value="Create">
 		</form>
 	</div>
-	
+
+  <!-- TODO make below scripts in function -->
 	<script>
 		var product_list = $('#select_product').html();
 		$("#create_product").keypress(function(){
@@ -225,23 +227,234 @@
 						$('#select_product').empty();
 						$( '<option value="0">Create new</option>' ).appendTo( "#select_product" );
 						for(var i = 0; i < results.length; i++) {
-							var id = results[i].id;				
+							var id = results[i].id;
 							var productName = results[i].name;
 							$( '<option value="' + id + '">' + productName + '</option>' ).appendTo( "#select_product" );
 						}
 					}
 				});
-			}					
+			}
 		});
 		$("#select_product").change(function(){
 			$('#create_product').val($('#select_product option:selected').text());
-		});	
+		});
 		$('#create_product').on('input', function(){
 			if($("#create_product").val() == "") {
+          //TODO take list from server. Don't waste browser memory? Check what would be faster.
 					$('#select_product').html(product_list);
-			}	
-		});	
+			}
+		});
+    var payment_list = $('#select_payment_method').html();
+		$("#create_payment_method").keypress(function(){
+			var payment_string_name = $("#create_payment_method").val();
+			if(payment_string_name.length > 1) {
+				$.ajax({
+					  method: "POST",
+					  url: "/payment/search",
+					  data : {name : $("#create_payment_method").val()}
+				}).done(function(msg){
+					if(msg.status == "ok") {
+						var results = msg.content;
+						$('#select_payment_method').empty();
+						$( '<option value="0">Create new</option>' ).appendTo( "#select_payment_method" );
+						for(var i = 0; i < results.length; i++) {
+							var id = results[i].id;
+							var paymentName = results[i].name;
+							$( '<option value="' + id + '">' + paymentName + '</option>' ).appendTo( "#select_payment_method" );
+						}
+					}
+				});
+			}
+		});
+		$("#select_payment_method").change(function(){
+			$('#create_payment_method').val($('#select_payment_method option:selected').text());
+		});
+		$('#create_payment_method').on('input', function(){
+			if($("#create_payment_method").val() == "") {
+          //TODO take list from server. Don't waste browser memory? Check what would be faster.
+					$('#select_payment_method').html(payment_list);
+			}
+		});
+    var place_list = $('#select_purchase_place').html();
+		$("#create_purchase_place").keypress(function(){
+			var place_string_name = $("#create_purchase_place").val();
+			if(place_string_name.length > 1) {
+				$.ajax({
+					  method: "POST",
+					  url: "/place/search",
+					  data : {name : $("#create_purchase_place").val()}
+				}).done(function(msg){
+					if(msg.status == "ok") {
+						var results = msg.content;
+						$('#select_purchase_place').empty();
+						$( '<option value="0">Create new</option>' ).appendTo( "#select_purchase_place" );
+						for(var i = 0; i < results.length; i++) {
+							var id = results[i].id;
+							var placeName = results[i].name;
+							$( '<option value="' + id + '">' + placeName + '</option>' ).appendTo( "#select_purchase_place" );
+						}
+					}
+				});
+			}
+		});
+		$("#select_purchase_place").change(function(){
+			$('#create_purchase_place').val($('#select_purchase_place option:selected').text());
+		});
+		$('#create_purchase_place').on('input', function(){
+			if($("#create_purchase_place").val() == "") {
+          //TODO take list from server. Don't waste browser memory? Check what would be faster.
+					$('#select_purchase_place').html(place_list);
+			}
+		});
+    var expensecategory_list = $('#select_expense_category').html();
+		$("#create_expense_category").keypress(function(){
+			var expensecategory_string_name = $("#create_expense_category").val();
+			if(expensecategory_string_name.length > 1) {
+				$.ajax({
+					  method: "POST",
+					  url: "/expensecategory/search",
+					  data : {name : $("#create_expense_category").val()}
+				}).done(function(msg){
+					if(msg.status == "ok") {
+						var results = msg.content;
+						$('#select_expense_category').empty();
+						$( '<option value="0">Create new</option>' ).appendTo( "#select_expense_category" );
+						for(var i = 0; i < results.length; i++) {
+							var id = results[i].id;
+							var expensecateogryName = results[i].name;
+							$( '<option value="' + id + '">' + expensecateogryName + '</option>' ).appendTo( "#select_expense_category" );
+						}
+					}
+				});
+			}
+		});
+		$("#select_expense_category").change(function(){
+			$('#create_expense_category').val($('#select_expense_category option:selected').text());
+		});
+		$('#create_expense_category').on('input', function(){
+			if($("#create_expense_category").val() == "") {
+          //TODO take list from server. Don't waste browser memory? Check what would be faster.
+					$('#select_expense_category').html(expensecategory_list);
+			}
+		});
+    var expensetype_list = $('#select_type_expense').html();
+		$("#create_type_expense").keypress(function(){
+			var expensetype_string_name = $("#create_type_expense").val();
+			if(expensetype_string_name.length > 1) {
+				$.ajax({
+					  method: "POST",
+					  url: "/expensetype/search",
+					  data : {name : $("#create_type_expense").val()}
+				}).done(function(msg){
+					if(msg.status == "ok") {
+						var results = msg.content;
+						$('#select_type_expense').empty();
+						$( '<option value="0">Create new</option>' ).appendTo( "#select_type_expense" );
+						for(var i = 0; i < results.length; i++) {
+							var id = results[i].id;
+							var expensetypeName = results[i].name;
+							$( '<option value="' + id + '">' + expensetypeName + '</option>' ).appendTo( "#select_type_expense" );
+						}
+					}
+				});
+			}
+		});
+		$("#select_type_expense").change(function(){
+			$('#create_type_expense').val($('#select_type_expense option:selected').text());
+		});
+		$('#create_type_expense').on('input', function(){
+			if($("#create_type_expense").val() == "") {
+          //TODO take list from server. Don't waste browser memory? Check what would be faster.
+					$('#select_type_expense').html(expensetype_list);
+			}
+		});
 	</script>
-	
+
+  <script>
+    $("#create_expense").submit(function(e){
+      e.preventDefault();
+      var data = {};
+  		if($("#datepicker3").val() != "") {
+        //TODO validation, field required
+  			data.date = $("#datepicker3").val();
+  		}
+  		if($("#create_description").val() != "") {
+        //TODO validation
+  			data.description = $("#create_description").val();
+  		}
+  		if($("#create_weight").val() != "") {
+        //TODO validation
+  			data.weight = $("#create_weight").val();
+  		}
+  		if($("#create_price").val() != "") {
+        //TODO validation, field required
+  			data.price = $("#create_price").val();
+  		}
+  		if($("#create_quantity").val() != "") {
+        //TODO validation, field required
+  			data.quantity = $("#create_quantity").val();
+  		}
+  		if($("#create_comment").val() != "") {
+        //TODO validation
+  			data.comment = $("#create_comment").val();
+  		}
+      if($("#select_product").val() == 0) {
+        var name = $("$create_product").val();
+        //TODO
+        //here ajax for create product
+        //after ajax take id
+        //data.product_id = productId;
+      } else {
+        data.product_id = $("#select_product").val();
+      }
+      if($("#select_type_expense").val() == 0) {
+        var name = $("$create_type_expense").val();
+        //TODO
+        //here ajax for create type of expenses
+        //after ajax take id
+        //data.type_of_expense_id = typeExpenseId;
+      } else {
+        data.type_of_expense_id = $("#select_type_expense").val();
+      }
+      if($("#select_payment_method").val() == 0) {
+        var name = $("$create_payment_method").val();
+        //TODO
+        //here ajax for create payment method
+        //after ajax take id
+        //data.payment_method_id = paymentId;
+      } else {
+        data.payment_method_id = $("select_payment_method").val();
+      }
+      if($("#select_expense_category").val() == 0) {
+        var name = $("$create_expense_category").val();
+        //TODO
+        //here ajax for create expense category
+        //after ajax take id
+        //data.category_of_expense_id = categoryExpenseId;
+      } else {
+        data.category_of_expense_id = $("select_expense_category").val();
+      }
+      if($("#select_purchase_place").val() == 0) {
+        var name = $("$create_purchase_place").val();
+        //TODO
+        //here ajax for create purchase place
+        //after ajax take id
+        //data.place_id = placeId;
+      } else {
+        data.place_id = $("select_purchase_place").val();
+      }
+      //TODO ajax for create expense
+      $.ajax({
+  		  method: "POST",
+  		  url: "/expense/add",
+  		  data
+  		})
+  		.done(function( msg ) {
+
+      });
+    });
+  </script>
+
   </body>
 </html>
+aa

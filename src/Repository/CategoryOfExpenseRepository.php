@@ -19,6 +19,12 @@ class CategoryOfExpenseRepository extends ServiceEntityRepository
         parent::__construct($registry, CategoryOfExpense::class);
     }
 
+    public function searchByString($query_string): array {
+      $entityManager = $this->getEntityManager();
+      $query = $entityManager->createQuery($query_string);
+      return $query->execute();
+    }
+
 //    /**
 //     * @return CategoryOfExpense[] Returns an array of CategoryOfExpense objects
 //     */

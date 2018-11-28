@@ -19,6 +19,12 @@ class TypeOfExpenseRepository extends ServiceEntityRepository
         parent::__construct($registry, TypeOfExpense::class);
     }
 
+    public function searchByString($query_string): array {
+      $entityManager = $this->getEntityManager();
+      $query = $entityManager->createQuery($query_string);
+      return $query->execute();
+    }
+
 //    /**
 //     * @return TypeOfExpense[] Returns an array of TypeOfExpense objects
 //     */
