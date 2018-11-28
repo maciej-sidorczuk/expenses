@@ -1,49 +1,46 @@
 <html>
   <head>
-  <link rel="stylesheet" href="{{asset('css/datepicker/jquery-ui.css')}}">
-  <link rel="stylesheet" href="{{asset('css/datepicker/style.css')}}">
+    <link rel="stylesheet" href="{{asset('css/datepicker/jquery-ui.css')}}">
+    <link rel="stylesheet" href="{{asset('css/datepicker/style.css')}}">
   </head>
   <body>
     <h1>Your expenses</h1>
-	<h2>Search filter</h2>
+    <h2>Search filter</h2>
     <p>Please select criteria in order to display expenses</p>
     <script src="{{ asset('js/datepicker/jquery-1.12.4.js') }}"></script>
     <script src="{{ asset('js/datepicker/jquery-ui.js') }}"></script>
     <form id="criteria_form">
       From date: <input type="text" name="from_date" id="datepicker1"><br />
       To date: <input type="text" name ="to_date" id="datepicker2"><br />
-	  Description: <input type="text" id="description" name="description"><br />
-	  Weight min: <input type="text" id="weight_min" name="weight_min"><br />
-	  Weight max: <input type="text" id="weight_max" name="weight_max"><br />
-	  Price min: <input type="text" id="price_min" name="price_min"><br />
-	  Price max: <input type="text" id="price_max" name="price_max"><br />
-	  Quantity min: <input type="text" id="quantity_min" name="quantity_min"><br />
-	  Quantity max: <input type="text" id="quantity_max" name="quantity_max"><br />
-	  Comment: <input type="text" id="comment" name="comment"><br />
-	  Products: <br />
-	  {% for product in products %}
-			<input type="checkbox" name="product[]" value="{{ product.id }}" > {{ product.name }}  <br />
-	  {% endfor %}
-	  Type of expense: <br />
-	  {% for type in expenseType %}
-			<input type="checkbox" name="expense_type[]" value="{{ type.id }}" > {{ type.name }}  <br />
-	  {% endfor %}
-	  Payment Method: <br />
-	  {% for payment in paymentMethod %}
-			<input type="checkbox" name="payment[]" value="{{ payment.id }}" > {{ payment.name }}  <br />
-	  {% endfor %}
-	  Expense Category: <br />
-	  {% for expenseCat in expenseCategory %}
-			<input type="checkbox" name="expense_category[]" value="{{ expenseCat.id }}" > {{ expenseCat.name }}  <br />
-	  {% endfor %}
-	  Purchase Place: <br />
-	  {% for place in purchasePlace %}
-			<input type="checkbox" name="place[]" value="{{ place.id }}" > {{ place.name }}  <br />
-	  {% endfor %}
-
-
+  	  Description: <input type="text" id="description" name="description"><br />
+  	  Weight min: <input type="text" id="weight_min" name="weight_min"><br />
+  	  Weight max: <input type="text" id="weight_max" name="weight_max"><br />
+  	  Price min: <input type="text" id="price_min" name="price_min"><br />
+  	  Price max: <input type="text" id="price_max" name="price_max"><br />
+  	  Quantity min: <input type="text" id="quantity_min" name="quantity_min"><br />
+  	  Quantity max: <input type="text" id="quantity_max" name="quantity_max"><br />
+  	  Comment: <input type="text" id="comment" name="comment"><br />
+  	  Products: <br />
+  	  {% for product in products %}
+  			<input type="checkbox" name="product[]" value="{{ product.id }}" > {{ product.name }}  <br />
+  	  {% endfor %}
+  	  Type of expense: <br />
+  	  {% for type in expenseType %}
+  			<input type="checkbox" name="expense_type[]" value="{{ type.id }}" > {{ type.name }}  <br />
+  	  {% endfor %}
+  	  Payment Method: <br />
+  	  {% for payment in paymentMethod %}
+  			<input type="checkbox" name="payment[]" value="{{ payment.id }}" > {{ payment.name }}  <br />
+  	  {% endfor %}
+  	  Expense Category: <br />
+  	  {% for expenseCat in expenseCategory %}
+  			<input type="checkbox" name="expense_category[]" value="{{ expenseCat.id }}" > {{ expenseCat.name }}  <br />
+  	  {% endfor %}
+  	  Purchase Place: <br />
+  	  {% for place in purchasePlace %}
+  			<input type="checkbox" name="place[]" value="{{ place.id }}" > {{ place.name }}  <br />
+  	  {% endfor %}
       <input type="submit" name="Show" value="Show">
-
     </form>
 	<div id="result_append_section"></div>
     <script>
@@ -63,106 +60,101 @@
     <script>
       $("#criteria_form").submit(function(e){
         e.preventDefault();
-		var data = {};
-		if($("#datepicker1").val() != "") {
-			data.from_date = $("#datepicker1").val();
-		}
-		if($("#datepicker2").val() != "") {
-			data.to_date = $("#datepicker2").val();
-		}
-		if($("#description").val() != "") {
-			data.description = $("#description").val();
-		}
-		if($("#weight_min").val() != "") {
-			data.weight_min = $("#weight_min").val();
-		}
-		if($("#weight_max").val() != "") {
-			data.weight_max = $("#weight_max").val();
-		}
-		if($("#price_min").val() != "") {
-			data.price_min = $("#price_min").val();
-		}
-		if($("#price_max").val() != "") {
-			data.price_max = $("#price_max").val();
-		}
-		if($("#quantity_min").val() != "") {
-			data.quantity_min = $("#quantity_min").val();
-		}
-		if($("#quantity_max").val() != "") {
-			data.quantity_max = $("#quantity_max").val();
-		}
-		if($("#comment").val() != "") {
-			data.comment = $("#comment").val();
-		}
-		var products_checkboxes= new Array();
-		$.each($("input[name='product[]']:checked"), function() {
-			products_checkboxes.push($(this).val());
-		});
-		data.product = products_checkboxes;
-		var expensetype_checkboxes= new Array();
-		$.each($("input[name='expense_type[]']:checked"), function() {
-			expensetype_checkboxes.push($(this).val());
-		});
-		data.expense_type = expensetype_checkboxes;
-		var paymentMethod_checkboxes= new Array();
-		$.each($("input[name='payment[]']:checked"), function() {
-			paymentMethod_checkboxes.push($(this).val());
-		});
-		data.payment = paymentMethod_checkboxes;
-		var expenseCategory_checkboxes= new Array();
-		$.each($("input[name='expense_category[]']:checked"), function() {
-			expenseCategory_checkboxes.push($(this).val());
-		});
-		data.expense_category = expenseCategory_checkboxes;
-		var purchasePlace_checkboxes= new Array();
-		$.each($("input[name='place[]']:checked"), function() {
-			purchasePlace_checkboxes.push($(this).val());
-		});
-		data.place = purchasePlace_checkboxes;
+    		var data = {};
+    		if($("#datepicker1").val() != "") {
+    			data.from_date = $("#datepicker1").val();
+    		}
+    		if($("#datepicker2").val() != "") {
+    			data.to_date = $("#datepicker2").val();
+    		}
+    		if($("#description").val() != "") {
+    			data.description = $("#description").val();
+    		}
+    		if($("#weight_min").val() != "") {
+    			data.weight_min = $("#weight_min").val();
+    		}
+    		if($("#weight_max").val() != "") {
+    			data.weight_max = $("#weight_max").val();
+    		}
+    		if($("#price_min").val() != "") {
+    			data.price_min = $("#price_min").val();
+    		}
+    		if($("#price_max").val() != "") {
+    			data.price_max = $("#price_max").val();
+    		}
+    		if($("#quantity_min").val() != "") {
+    			data.quantity_min = $("#quantity_min").val();
+    		}
+    		if($("#quantity_max").val() != "") {
+    			data.quantity_max = $("#quantity_max").val();
+    		}
+    		if($("#comment").val() != "") {
+    			data.comment = $("#comment").val();
+    		}
+    		var products_checkboxes= new Array();
+    		$.each($("input[name='product[]']:checked"), function() {
+    			products_checkboxes.push($(this).val());
+    		});
+    		data.product = products_checkboxes;
+    		var expensetype_checkboxes= new Array();
+    		$.each($("input[name='expense_type[]']:checked"), function() {
+    			expensetype_checkboxes.push($(this).val());
+    		});
+    		data.expense_type = expensetype_checkboxes;
+    		var paymentMethod_checkboxes= new Array();
+    		$.each($("input[name='payment[]']:checked"), function() {
+    			paymentMethod_checkboxes.push($(this).val());
+    		});
+    		data.payment = paymentMethod_checkboxes;
+    		var expenseCategory_checkboxes= new Array();
+    		$.each($("input[name='expense_category[]']:checked"), function() {
+    			expenseCategory_checkboxes.push($(this).val());
+    		});
+    		data.expense_category = expenseCategory_checkboxes;
+    		var purchasePlace_checkboxes= new Array();
+    		$.each($("input[name='place[]']:checked"), function() {
+    			purchasePlace_checkboxes.push($(this).val());
+    		});
+    		data.place = purchasePlace_checkboxes;
 
-		$.ajax({
-		  method: "POST",
-		  url: "/expense/show",
-		  data
-		})
-		.done(function( msg ) {
-			if(msg.status == "ok") {
-				var results = msg.content;
-				var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date</th><th>Product</th><th>Description</th><th>Weight</th><th>Price</th><th>Quantity</th><th>Total price</th><th>Type of expense</th><th>Payment method</th><th>Category of expense</th><th>Place</th><th>Comment</th></tr>";
-				for(var i = 0; i < results .length; i++) {
-					var id = results[i][0].id;
-					var date = results[i][0].purchaseDate;
-					var format_date = date.substring(0, 10);
-					var product_id = results[i][0].productId.id;
-					var product = results[i][0].productId.name;
-					var description = results[i][0].description;
-					var weight = results[i][0].weight;
-					var price = results[i][0].price;
-					var quantity = results[i][0].quantity;
-					var total_price = results[i].total_price;
-					var type_of_expense_id = results[i][0].typeOfExpenseId.id;
-					var type_of_expense = results[i][0].typeOfExpenseId.name;
-					var payment_method_id = results[i][0].paymentMethodId.id;
-					var payment_method= results[i][0].paymentMethodId.name;
-					var category_of_expense_id = results[i][0].categoryOfExpenseId.id;
-					var category_of_expense = results[i][0].categoryOfExpenseId.name;
-					var place_id = results[i][0].placeId.id;
-					var place = results[i][0].placeId.name;
-					var comment = results[i][0].comment;
-					var counter = i + 1;
-					string_result += "<tr><td>" + counter  + "</td><td>" + format_date + "</td><td>" + product + "</td><td>" + description + "</td><td>" + weight + "</td><td>" + price + "</td><td>" + quantity + "</td><td>" + total_price + "</td><td>" + type_of_expense + "</td><td>" + payment_method + "</td><td>" + category_of_expense + "</td><td>" + place + "</td><td>" + comment + "</td></tr>";
-
-				}
-				string_result += "</tbody></table>";
-				$("#result_append_section").empty();
-				$(string_result).appendTo("#result_append_section");
-			}
-		});
-
-
-
-      });
-    </script>
+    		$.ajax({
+    		  method: "POST",
+    		  url: "/expense/show",
+    		  data
+    		}).done(function( msg ) {
+          if(msg.status == "ok") {
+	        var results = msg.content;
+		      var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date</th><th>Product</th><th>Description</th><th>Weight</th><th>Price</th><th>Quantity</th><th>Total price</th><th>Type of expense</th><th>Payment method</th><th>Category of expense</th><th>Place</th><th>Comment</th></tr>";
+		      for(var i = 0; i < results .length; i++) {
+  					var id = results[i][0].id;
+  					var date = results[i][0].purchaseDate;
+  					var format_date = date.substring(0, 10);
+  					var product_id = results[i][0].productId.id;
+  					var product = results[i][0].productId.name;
+  					var description = results[i][0].description;
+  					var weight = results[i][0].weight;
+  					var price = results[i][0].price;
+  					var quantity = results[i][0].quantity;
+  					var total_price = results[i].total_price;
+  					var type_of_expense_id = results[i][0].typeOfExpenseId.id;
+  					var type_of_expense = results[i][0].typeOfExpenseId.name;
+  					var payment_method_id = results[i][0].paymentMethodId.id;
+  					var payment_method= results[i][0].paymentMethodId.name;
+  					var category_of_expense_id = results[i][0].categoryOfExpenseId.id;
+  					var category_of_expense = results[i][0].categoryOfExpenseId.name;
+  					var place_id = results[i][0].placeId.id;
+  					var place = results[i][0].placeId.name;
+  					var comment = results[i][0].comment;
+  					var counter = i + 1;
+  					string_result += "<tr><td>" + counter  + "</td><td>" + format_date + "</td><td>" + product + "</td><td>" + description + "</td><td>" + weight + "</td><td>" + price + "</td><td>" + quantity + "</td><td>" + total_price + "</td><td>" + type_of_expense + "</td><td>" + payment_method + "</td><td>" + category_of_expense + "</td><td>" + place + "</td><td>" + comment + "</td></tr>";
+		      }
+  				string_result += "</tbody></table>";
+  				$("#result_append_section").empty();
+  				$(string_result).appendTo("#result_append_section");
+	      }
+		  });
+    });
+  </script>
 	<div id="create_new">
 		<h2>Create expense</h2>
 		<form id="create_expense">
@@ -207,8 +199,10 @@
 					<option value="{{ place.id }}">{{ place.name }}</option>
 				{% endfor %}
 			</select><br />
+      Same shoppping? <input type="checkbox" name="same_shopping" value="1" id="same_shopping" checked><br />
       <input type="submit" name="Create" value="Create">
 		</form>
+    <div id="create_result_area"></div>
 	</div>
   <script>
     function searchElementbyAjax(elementName, searchUrl) {
@@ -282,7 +276,7 @@
   			data.comment = $("#create_comment").val();
   		}
       if($("#select_product").val() == 0) {
-        var name = $("$create_product").val();
+        var name = $("#create_product").val();
         //TODO
         //here ajax for create product
         //after ajax take id
@@ -291,7 +285,7 @@
         data.product_id = $("#select_product").val();
       }
       if($("#select_type_expense").val() == 0) {
-        var name = $("$create_type_expense").val();
+        var name = $("#create_type_expense").val();
         //TODO
         //here ajax for create type of expenses
         //after ajax take id
@@ -300,13 +294,13 @@
         data.type_of_expense_id = $("#select_type_expense").val();
       }
       if($("#select_payment_method").val() == 0) {
-        var name = $("$create_payment_method").val();
+        var name = $("#create_payment_method").val();
         //TODO
         //here ajax for create payment method
         //after ajax take id
         //data.payment_method_id = paymentId;
       } else {
-        data.payment_method_id = $("select_payment_method").val();
+        data.payment_method_id = $("#select_payment_method").val();
       }
       if($("#select_expense_category").val() == 0) {
         var name = $("$create_expense_category").val();
@@ -315,7 +309,7 @@
         //after ajax take id
         //data.category_of_expense_id = categoryExpenseId;
       } else {
-        data.category_of_expense_id = $("select_expense_category").val();
+        data.category_of_expense_id = $("#select_expense_category").val();
       }
       if($("#select_purchase_place").val() == 0) {
         var name = $("$create_purchase_place").val();
@@ -324,20 +318,30 @@
         //after ajax take id
         //data.place_id = placeId;
       } else {
-        data.place_id = $("select_purchase_place").val();
+        data.place_id = $("#select_purchase_place").val();
       }
-      //TODO ajax for create expense
       $.ajax({
   		  method: "POST",
   		  url: "/expense/add",
   		  data
   		})
   		.done(function( msg ) {
-
+        $("#create_result_area").empty();
+        if(msg.status == "ok") {
+          var results = msg.content;
+          console.log(results);
+          $("#create_result_area").text("Product was added to database");
+          if($('#same_shopping').attr('checked')) {
+            //TODO clear some fields
+          } else {
+            //TODO clear all fields
+          }
+        } else if(msg.status == "error") {
+          console.log(msg);
+          $("#create_result_area").text(msg.message);
+        }
       });
     });
   </script>
-
   </body>
 </html>
-aa
