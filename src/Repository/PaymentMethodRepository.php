@@ -19,9 +19,12 @@ class PaymentMethodRepository extends ServiceEntityRepository
         parent::__construct($registry, PaymentMethod::class);
     }
 
-    public function searchByString($query_string): array {
+    public function searchByString($query_string, $value = null): array {
       $entityManager = $this->getEntityManager();
       $query = $entityManager->createQuery($query_string);
+      if(isset($value)) {
+        $query->setParameter('name', $value);
+      }
       return $query->execute();
     }
 

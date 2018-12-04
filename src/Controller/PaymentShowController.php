@@ -34,4 +34,22 @@ class PaymentShowController extends AbstractController
           return $this->json(array('status' => 'ok', 'content' => $paymentMethods));
         }
     }
+
+    /**
+     * @Route("/payment/showbyname", name="payment_showbyname")
+     */
+     public function showByName(Request $request) {
+       $name = $request->request->get('name');
+       if(isset($name) && !empty($name)) {
+         $name = trim($name);
+         $name = ucwords($name);
+         $query_string = 'SELECT p FROM App\Entity\PaymentMethod p WHERE p.name = :name';
+         $payments = $this->getDoctrine()
+           ->getRepository(PaymentMethod::class)
+           ->searchByString($query_string, $name);
+         return $this->json(array('status' => 'ok', 'content' => $payments));
+       } else {
+         return $this->json(array('status' => 'error', 'message' => 'You didn\'t provide payment name'));
+       }
+     }
 }

@@ -34,4 +34,22 @@ class ExpensecategoryShowController extends AbstractController
           return $this->json(array('status' => 'ok', 'content' => $categoryOfExpenses));
         }
     }
+
+    /**
+     * @Route("/expensecategory/showbyname", name="expensecategory_showbyname")
+     */
+     public function showByName(Request $request) {
+       $name = $request->request->get('name');
+       if(isset($name) && !empty($name)) {
+         $name = trim($name);
+         $name = ucwords($name);
+         $query_string = 'SELECT p FROM App\Entity\CategoryOfExpense p WHERE p.name = :name';
+         $cats = $this->getDoctrine()
+           ->getRepository(CategoryOfExpense::class)
+           ->searchByString($query_string, $name);
+         return $this->json(array('status' => 'ok', 'content' => $cats));
+       } else {
+         return $this->json(array('status' => 'error', 'message' => 'You didn\'t provide expense category name'));
+       }
+     }
 }

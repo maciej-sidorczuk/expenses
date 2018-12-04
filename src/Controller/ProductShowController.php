@@ -34,4 +34,23 @@ class ProductShowController extends AbstractController
           return $this->json(array('status' => 'ok', 'content' => $Products));
         }
     }
+
+    /**
+     * @Route("/product/showbyname", name="product_showbyname")
+     */
+     public function showByName(Request $request) {
+       $name = $request->request->get('name');
+       if(isset($name) && !empty($name)) {
+         $name = trim($name);
+         $name = ucwords($name);
+         $query_string = 'SELECT p FROM App\Entity\Product p WHERE p.name = :name';
+         $products = $this->getDoctrine()
+           ->getRepository(Product::class)
+           ->searchByString($query_string, $name);
+         return $this->json(array('status' => 'ok', 'content' => $products));
+       } else {
+         return $this->json(array('status' => 'error', 'message' => 'You didn\'t provide product name'));
+       }
+     }
+
 }

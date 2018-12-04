@@ -248,6 +248,41 @@
   </script>
 
   <script>
+
+    function checkAndCreateItem(itemType, itemUrlPart, itemName, data) {
+      var showUrl = "/" + itemUrlPart + "/showbyname";
+      var addUrl = "/" + itemUrlPart + "/add";
+      var fieldId = itemType + "_id";
+      $.ajax({
+        method: "POST",
+        url: showUrl,
+        data: {name: itemName}
+      })
+      .done(function( msg ) {
+        if(msg.status == "ok") {
+          var results = msg.content;
+          if(results.length > 0) {
+            data[fieldId] = results[0].id;
+          } else {
+            $.ajax({
+              method: "POST",
+              url: addUrl,
+              data: {name: itemName}
+            })
+            .done(function( msg ) {
+              if(msg.status == "ok") {
+                data[fieldId] = msg.id;
+              } else {
+                $("#create_result_area").empty();
+                $("#create_result_area").text("Error. Can't create " + itemType);
+                return;
+              }
+            });
+          }
+        }
+      });
+    }
+
     $("#create_expense").submit(function(e){
       e.preventDefault();
       var data = {};
@@ -276,71 +311,62 @@
   			data.comment = $("#create_comment").val();
   		}
       if($("#select_product").val() == 0) {
-        var name = $("#create_product").val();
-        //TODO
-        //here ajax for create product
-        //after ajax take id
-        //data.product_id = productId;
+        var productName = $("#create_product").val();
+        checkAndCreateItem('product', 'product', productName, data);
       } else {
         data.product_id = $("#select_product").val();
       }
       if($("#select_type_expense").val() == 0) {
         var name = $("#create_type_expense").val();
-        //TODO
-        //here ajax for create type of expenses
-        //after ajax take id
-        //data.type_of_expense_id = typeExpenseId;
+        checkAndCreateItem('type_of_expense', 'expensetype', name, data);
       } else {
         data.type_of_expense_id = $("#select_type_expense").val();
       }
       if($("#select_payment_method").val() == 0) {
         var name = $("#create_payment_method").val();
-        //TODO
-        //here ajax for create payment method
-        //after ajax take id
-        //data.payment_method_id = paymentId;
+        checkAndCreateItem('payment_method', 'payment', name, data);
       } else {
         data.payment_method_id = $("#select_payment_method").val();
       }
       if($("#select_expense_category").val() == 0) {
-        var name = $("$create_expense_category").val();
-        //TODO
-        //here ajax for create expense category
-        //after ajax take id
-        //data.category_of_expense_id = categoryExpenseId;
+        var name = $("#create_expense_category").val();
+        checkAndCreateItem('category_of_expense', 'expensecategory', name, data);
       } else {
         data.category_of_expense_id = $("#select_expense_category").val();
       }
       if($("#select_purchase_place").val() == 0) {
-        var name = $("$create_purchase_place").val();
-        //TODO
-        //here ajax for create purchase place
-        //after ajax take id
-        //data.place_id = placeId;
+        var name = $("#create_purchase_place").val();
+        checkAndCreateItem('place', 'purchase/place', name, data);
       } else {
         data.place_id = $("#select_purchase_place").val();
       }
-      $.ajax({
-  		  method: "POST",
-  		  url: "/expense/add",
-  		  data
-  		})
-  		.done(function( msg ) {
-        $("#create_result_area").empty();
-        if(msg.status == "ok") {
-          var results = msg.content;
-          console.log(results);
-          $("#create_result_area").text("Product was added to database");
-          if($('#same_shopping').attr('checked')) {
-            //TODO clear some fields
-          } else {
-            //TODO clear all fields
-          }
-        } else if(msg.status == "error") {
-          console.log(msg);
-          $("#create_result_area").text(msg.message);
+      var ajaxStopExecuted = false;
+      $( document ).ajaxStop(function() {
+        if(!ajaxStopExecuted) {
+          ajaxStopExecuted = true;
+          $.ajax({
+      		  method: "POST",
+      		  url: "/expense/add",
+      		  data
+      		})
+      		.done(function( msg ) {
+            $("#create_result_area").empty();
+            if(msg.status == "ok") {
+              $("#create_result_area").empty();
+              $("#create_result_area").text("Expense was added to database");
+              if($('#same_shopping').attr('checked')) {
+                //TODO clear some fields and reset selects
+              } else {
+                //TODO clear all fields and reset selects
+              }
+            } else if(msg.status == "error") {
+              $("#create_result_area").empty();
+              $("#create_result_area").text(msg.message);
+            }
+          });
         }
       });
+
     });
   </script>
   </body>
