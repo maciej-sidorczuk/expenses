@@ -40,6 +40,15 @@
   	  {% for place in purchasePlace %}
   			<input type="checkbox" name="place[]" value="{{ place.id }}" > {{ place.name }}  <br />
   	  {% endfor %}
+      Order and order direction: <br />
+      <select id="select_order">
+        <option value="purchase_date">Purchase date</option>
+        <option value="price">price</option>
+      </select>
+      <select id="select_order_direction">
+        <option value="ASC">ASC</option>
+        <option value="DESC">DESC</option>
+      </select><br />
       <input type="submit" name="Show" value="Show">
     </form>
 	<div id="result_append_section"></div>
@@ -115,6 +124,8 @@
     		$.each($("input[name='place[]']:checked"), function() {
     			purchasePlace_checkboxes.push($(this).val());
     		});
+    		data.order = $("#select_order").val();
+        data.order_direction = $("#select_order_direction").val();
     		data.place = purchasePlace_checkboxes;
 
     		$.ajax({
@@ -124,7 +135,7 @@
     		}).done(function( msg ) {
           if(msg.status == "ok") {
 	        var results = msg.content;
-		      var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date</th><th>Product</th><th>Description</th><th>Weight</th><th>Price</th><th>Quantity</th><th>Total price</th><th>Type of expense</th><th>Payment method</th><th>Category of expense</th><th>Place</th><th>Comment</th></tr>";
+		      var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date</th><th>Product</th><th>Description</th><th>Weight</th><th>Price</th><th>Quantity</th><th>Total price</th><th>Type of expense</th><th>Payment method</th><th>Category of expense</th><th>Place</th><th>Comment</th><th>Edit</th><th>Delete</th></tr>";
 		      for(var i = 0; i < results .length; i++) {
   					var id = results[i][0].id;
   					var date = results[i][0].purchaseDate;
@@ -146,13 +157,28 @@
   					var place = results[i][0].placeId.name;
   					var comment = results[i][0].comment;
   					var counter = i + 1;
-  					string_result += "<tr><td>" + counter  + "</td><td>" + format_date + "</td><td>" + product + "</td><td>" + description + "</td><td>" + weight + "</td><td>" + price + "</td><td>" + quantity + "</td><td>" + total_price + "</td><td>" + type_of_expense + "</td><td>" + payment_method + "</td><td>" + category_of_expense + "</td><td>" + place + "</td><td>" + comment + "</td></tr>";
+  					string_result += "<tr><td>" + counter  + "</td><td>" + format_date + "</td><td>" + product + "</td><td>" + description + "</td><td>" + weight + "</td><td>" + price + "</td><td>" + quantity + "</td><td>" + total_price + "</td><td>" + type_of_expense + "</td><td>" + payment_method + "</td><td>" + category_of_expense + "</td><td>" + place + "</td><td>" + comment + "</td>" + "<td><input type=\"radio\" name=\"edit\" value=\"" + id + "\"></td>" + "<td><input type=\"checkbox\" name=\"delete_checkbox\" value=\"" + id + "\"></td></tr>";
 		      }
+          string_result += "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><button type=\"button\">Edit</button></td><td><button type=\"button\" id=\"delete_button\">Delete</button></td>";
   				string_result += "</tbody></table>";
   				$("#result_append_section").empty();
   				$(string_result).appendTo("#result_append_section");
+          $(document).trigger("expenseTableButtonsReady");
 	      }
 		  });
+    });
+  </script>
+  <script>
+    $(document).on("expenseTableButtonsReady", function(){
+      $('#delete_button').click(function(){
+        var ids = [];
+        $('input[name=delete_checkbox]:checked').each(function(){
+          ids.push($(this).val());
+        });
+        //make ajax request with ids to delete records then
+        //refresh the table
+        //$("#criteria_form").submit();
+      });
     });
   </script>
 	<div id="create_new">

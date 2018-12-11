@@ -180,10 +180,26 @@ class ExpenseShowController extends AbstractController
             $where .= 'p.comment like \'%' . $comment  . '%\' AND ';
           }
 
+          $order = $request->request->get('order');
+          $order_direction = $request->request->get('order_direction');
+          $order_sql = "";
+
+          if(isset($order)) {
+            $order_sql .= " ORDER BY " . "p." . $order;
+            if(isset($order_direction)) {
+              if(strtoupper($order_direction) == "DESC") {
+                $order_sql .= " DESC";
+              } else {
+                $order_sql .= " ASC";
+              }
+            } else {
+              $order_sql .= " ASC";
+            }
+          }
 
           if($where == '') {
             if($having == '') {
-              $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p';
+              $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p' . $order_sql;
               $expenses = $this->getDoctrine()
                 ->getRepository(Expense::class)
                 ->searchAll($query_string);
@@ -191,7 +207,7 @@ class ExpenseShowController extends AbstractController
             } else {
               $having = trim($having);
               $having = preg_replace("/\sAND$/", '', $having);
-              $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p HAVING ' . $having ;
+              $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p HAVING ' . $having . $order_sql;
               $expenses = $this->getDoctrine()
                 ->getRepository(Expense::class)
                 ->searchAll($query_string, $values_to_add);
@@ -206,7 +222,7 @@ class ExpenseShowController extends AbstractController
             if($having != '') {
               $having = ' HAVING ' . $having;
             }
-            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p' . $where . $having;
+            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p' . $where . $having . $order_sql;
             $expenses = $this->getDoctrine()
               ->getRepository(Expense::class)
               ->searchByParams($query_string, $values_to_add, $limit);
