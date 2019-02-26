@@ -173,8 +173,24 @@
       $('#delete_button').click(function(){
         var ids = [];
         $('input[name=delete_checkbox]:checked').each(function(){
+          /*if(ids == "") {
+            ids += $(this).val();
+          } else {
+            ids += ", " + $(this).val();
+          }*/
           ids.push($(this).val());
         });
+        $.ajax({
+            method: "POST",
+            url: '/expense/remove',
+            data : {id : ids}
+        }).done(function(msg){
+          if(msg.status == "ok") {
+            alert('Rekordy zostały skasowane');
+            $("#criteria_form").submit();
+          }
+        });
+
         //make ajax request with ids to delete records then
         //refresh the table
         //$("#criteria_form").submit();

@@ -15,18 +15,27 @@ class ExpenseRemoveController extends AbstractController
     public function index(Request $request)
     {
         $id = $request->request->get('id');
+        file_put_contents('/var/www/mswydatki.pl/debug2.log', print_r($id, true), FILE_APPEND);
         if(isset($id) && !empty($id)) {
-          $expense= $this->getDoctrine()
-          ->getRepository(Expense::class)
-          ->find($id);
-          if(!$expense) {
-            return $this->json(array('status' => 'error', 'message' => 'Object not found'));
+          if(is_array($id)) {
+            $expense = $this->getDoctrine()
+            ->getRepository(Expense::class)
+            ->deleteAll($id);
+            return $this->json(array('status' => 'ok'));        
           } else {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($expense);
-            $entityManager->flush();
-            return $this->json(array('status' => 'ok'));
+            $expense= $this->getDoctrine()
+            ->getRepository(Expense::class)
+            ->find($id);
+            if(!$expense) {
+              return $this->json(array('status' => 'error', 'message' => 'Object not found'));
+            } else {
+              $entityManager = $this->getDoctrine()->getManager();
+              $entityManager->remove($expense);
+              $entityManager->flush();
+              return $this->json(array('status' => 'ok'));
+            }
           }
+
         } else {
           return $this->json(array('status' => 'error', 'message' => 'Incorrect parameters'));
         }

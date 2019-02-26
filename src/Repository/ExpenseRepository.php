@@ -45,6 +45,13 @@ class ExpenseRepository extends ServiceEntityRepository
       return $query->execute();
     }
 
+    public function deleteAll($ids) {
+      $entityManager = $this->getEntityManager();
+      $stringQuery = 'DELETE FROM App\Entity\Expense p WHERE p.id IN (:ids)';
+      $query = $entityManager->createQuery($stringQuery)->setParameter('ids', $ids);
+      return $query->execute();
+    }
+
 //    /**
 //     * @return Expense[] Returns an array of Expense objects
 //     */
