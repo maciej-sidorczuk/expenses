@@ -6,6 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Expense;
+use App\Entity\CategoryOfExpense;
+use App\Entity\PaymentMethod;
+use App\Entity\Place;
+use App\Entity\Product;
+use App\Entity\TypeOfExpense;
 
 class ExpenseShowController extends AbstractController
 {
@@ -185,7 +190,15 @@ class ExpenseShowController extends AbstractController
           $order_sql = "";
 
           if(isset($order)) {
-            $order_sql .= " ORDER BY " . "p." . $order;
+            switch($order) {
+              case "product": $order_sql .= " ORDER BY " . "r.name"; break;
+              case "typeofexpense": $order_sql .= " ORDER BY " . "s.name"; break;
+              case "paymentmethod": $order_sql .= " ORDER BY " . "t.name"; break;
+              case "categoryofexpense": $order_sql .= " ORDER BY " . "u.name"; break;
+              case "place": $order_sql .= " ORDER BY " . "w.name"; break;
+              case "totalprice" : $order_sql .= " ORDER BY " . "total_price"; break;
+              default: $order_sql .= " ORDER BY " . "p." . $order;
+            }
             if(isset($order_direction)) {
               if(strtoupper($order_direction) == "DESC") {
                 $order_sql .= " DESC";
@@ -200,6 +213,16 @@ class ExpenseShowController extends AbstractController
           if($where == '') {
             if($having == '') {
               $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p' . $order_sql;
+              if(isset($order)) {
+                switch($order) {
+                  case "product": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id' . $order_sql; break;
+                  case "typeofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id' . $order_sql; break;
+                  case "paymentmethod": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id' . $order_sql; break;
+                  case "categoryofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id' . $order_sql; break;
+                  case "place": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id' . $order_sql; break;
+                  case "totalprice": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p ' . $order_sql; break;
+                }
+              }
               $expenses = $this->getDoctrine()
                 ->getRepository(Expense::class)
                 ->searchAll($query_string);
@@ -208,6 +231,16 @@ class ExpenseShowController extends AbstractController
               $having = trim($having);
               $having = preg_replace("/\sAND$/", '', $having);
               $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p HAVING ' . $having . $order_sql;
+              if(isset($order)) {
+                switch($order) {
+                  case "product": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id HAVING ' . $having . $order_sql; break;
+                  case "typeofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id HAVING ' . $having . $order_sql; break;
+                  case "paymentmethod": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id HAVING ' . $having . $order_sql; break;
+                  case "categoryofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id HAVING ' . $having . $order_sql; break;
+                  case "place": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id HAVING ' . $having . $order_sql; break;
+                  case "totalprice": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p  HAVING ' . $having . $order_sql; break;
+                }
+              }
               $expenses = $this->getDoctrine()
                 ->getRepository(Expense::class)
                 ->searchAll($query_string, $values_to_add);
@@ -223,6 +256,16 @@ class ExpenseShowController extends AbstractController
               $having = ' HAVING ' . $having;
             }
             $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p' . $where . $having . $order_sql;
+            if(isset($order)) {
+              switch($order) {
+                case "product": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id' . $where . $having . $order_sql; break;
+                case "typeofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id' . $where . $having . $order_sql; break;
+                case "paymentmethod": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id' . $where . $having . $order_sql; break;
+                case "categoryofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id' . $where . $having . $order_sql; break;
+                case "place": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id' . $where . $having . $order_sql; break;
+                case "totalprice": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p ' . $where . $having . $order_sql; break;
+              }
+            }
             $expenses = $this->getDoctrine()
               ->getRepository(Expense::class)
               ->searchByParams($query_string, $values_to_add, $limit);

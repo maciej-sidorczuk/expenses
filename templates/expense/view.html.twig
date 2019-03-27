@@ -43,7 +43,17 @@
       Order and order direction: <br />
       <select id="select_order">
         <option value="purchase_date">Purchase date</option>
-        <option value="price">price</option>
+        <option value="product">Product</option>
+        <option value="description">Description</option>
+        <option value="weight">Weight</option>
+        <option value="price">Price</option>
+        <option value="quantity">Quantity</option>
+        <option value="totalprice">Total price</option>
+        <option value="paymentmethod">Payment method</option>
+        <option value="categoryofexpense">Category of expense</option>
+        <option value="typeofexpense">Type of expense</option>
+        <option value="place">Place</option>
+        <option value="comment">Comment</option>
       </select>
       <select id="select_order_direction">
         <option value="ASC">ASC</option>
@@ -135,7 +145,7 @@
     		}).done(function( msg ) {
           if(msg.status == "ok") {
 	        var results = msg.content;
-		      var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date</th><th>Product</th><th>Description</th><th>Weight</th><th>Price</th><th>Quantity</th><th>Total price</th><th>Type of expense</th><th>Payment method</th><th>Category of expense</th><th>Place</th><th>Comment</th><th>Edit</th><th>Delete</th></tr>";
+		      var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date <span class=\"date_sort\">(Sort)</span></th><th>Product <span class=\"product_sort\">(Sort)</span></th><th>Description <span class=\"description_sort\">(Sort)</span></th><th>Weight <span class=\"weight_sort\">(Sort)</span></th><th>Price <span class=\"price_sort\">(Sort)</span></th><th>Quantity <span class=\"quantity_sort\">(Sort)</span></th><th>Total price <span class=\"totalprice_sort\">(Sort)</span></th><th>Type of expense <span class=\"typeofexpense_sort\">(Sort)</span></th><th>Payment method <span class=\"paymentmethod_sort\">(Sort)</span></th><th>Category of expense <span class=\"categoryofexpense_sort\">(Sort)</span></th><th>Place <span class=\"place_sort\">(Sort)</span></th><th>Comment <span class=\"comment_sort\">(Sort)</span></th><th>Edit</th><th>Delete</th></tr>";
 		      for(var i = 0; i < results .length; i++) {
   					var id = results[i][0].id;
   					var date = results[i][0].purchaseDate;
@@ -163,13 +173,64 @@
   				string_result += "</tbody></table>";
   				$("#result_append_section").empty();
   				$(string_result).appendTo("#result_append_section");
-          $(document).trigger("expenseTableButtonsReady");
+          changeSortingColumn('.date_sort');
+          changeSortingColumn('.product_sort');
+          changeSortingColumn('.description_sort');
+          changeSortingColumn('.weight_sort');
+          changeSortingColumn('.price_sort');
+          changeSortingColumn('.quantity_sort');
+          changeSortingColumn('.totalprice_sort');
+          changeSortingColumn('.typeofexpense_sort');
+          changeSortingColumn('.paymentmethod_sort');
+          changeSortingColumn('.categoryofexpense_sort');
+          changeSortingColumn('.place_sort');
+          changeSortingColumn('.comment_sort');
+          $(document).trigger("expenseTableReady");
 	      }
 		  });
     });
   </script>
   <script>
-    $(document).on("expenseTableButtonsReady", function(){
+    function sortingColumn(classColumnName, orderValue) {
+      $(classColumnName).click(function(){
+        $("#select_order").val(orderValue);
+        if($(this).text() == "UP") {
+          $('#select_order_direction').val("DESC");
+          $("#criteria_form").removeClass();
+          $("#criteria_form").addClass(classColumnName + "_desc");
+        } else {
+          $('#select_order_direction').val("ASC");
+          $("#criteria_form").removeClass();
+          $("#criteria_form").addClass(classColumnName + "_asc");
+        }
+        $("#criteria_form").submit();
+      })
+    }
+    function changeSortingColumn(classColumnName) {
+      if($("#criteria_form").hasClass(classColumnName + "_asc")) {
+        $(classColumnName).text("UP");
+        $(this).removeClass();
+      }
+      if($("#criteria_form").hasClass(classColumnName + "_desc")) {
+        $(classColumnName).text("DOWN");
+        $(this).removeClass();
+      }
+    }
+  </script>
+  <script>
+    $(document).on("expenseTableReady", function(){
+      sortingColumn('.date_sort', 'purchase_date');
+      sortingColumn('.product_sort', 'product');
+      sortingColumn('.description_sort', 'description');
+      sortingColumn('.weight_sort', 'weight');
+      sortingColumn('.quantity_sort', 'quantity');
+      sortingColumn('.price_sort', 'price');
+      sortingColumn('.totalprice_sort', 'totalprice');
+      sortingColumn('.typeofexpense_sort', 'typeofexpense');
+      sortingColumn('.paymentmethod_sort', 'paymentmethod');
+      sortingColumn('.categoryofexpense_sort', 'categoryofexpense');
+      sortingColumn('.place_sort', 'place');
+      sortingColumn('.comment_sort', 'comment');
       $('#delete_button').click(function(){
         var ids = [];
         $('input[name=delete_checkbox]:checked').each(function(){
@@ -186,7 +247,7 @@
             data : {id : ids}
         }).done(function(msg){
           if(msg.status == "ok") {
-            alert('Rekordy zostały skasowane');
+            alert('Records were deleted');
             $("#criteria_form").submit();
           }
         });
