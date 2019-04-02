@@ -2,65 +2,70 @@
   <head>
     <link rel="stylesheet" href="{{asset('css/datepicker/jquery-ui.css')}}">
     <link rel="stylesheet" href="{{asset('css/datepicker/style.css')}}">
+    <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <script src="{{ asset('js/datepicker/jquery-1.12.4.js') }}"></script>
+    <script src="{{ asset('js/datepicker/jquery-ui.js') }}"></script>
   </head>
   <body>
     <h1>Your expenses</h1>
-    <h2>Search filter</h2>
-    <p>Please select criteria in order to display expenses</p>
-    <script src="{{ asset('js/datepicker/jquery-1.12.4.js') }}"></script>
-    <script src="{{ asset('js/datepicker/jquery-ui.js') }}"></script>
-    <form id="criteria_form">
-      From date: <input type="text" name="from_date" id="datepicker1"><br />
-      To date: <input type="text" name ="to_date" id="datepicker2"><br />
-  	  Description: <input type="text" id="description" name="description"><br />
-  	  Weight min: <input type="text" id="weight_min" name="weight_min"><br />
-  	  Weight max: <input type="text" id="weight_max" name="weight_max"><br />
-  	  Price min: <input type="text" id="price_min" name="price_min"><br />
-  	  Price max: <input type="text" id="price_max" name="price_max"><br />
-  	  Quantity min: <input type="text" id="quantity_min" name="quantity_min"><br />
-  	  Quantity max: <input type="text" id="quantity_max" name="quantity_max"><br />
-  	  Comment: <input type="text" id="comment" name="comment"><br />
-  	  Products: <br />
-  	  {% for product in products %}
-  			<input type="checkbox" name="product[]" value="{{ product.id }}" > {{ product.name }}  <br />
-  	  {% endfor %}
-  	  Type of expense: <br />
-  	  {% for type in expenseType %}
-  			<input type="checkbox" name="expense_type[]" value="{{ type.id }}" > {{ type.name }}  <br />
-  	  {% endfor %}
-  	  Payment Method: <br />
-  	  {% for payment in paymentMethod %}
-  			<input type="checkbox" name="payment[]" value="{{ payment.id }}" > {{ payment.name }}  <br />
-  	  {% endfor %}
-  	  Expense Category: <br />
-  	  {% for expenseCat in expenseCategory %}
-  			<input type="checkbox" name="expense_category[]" value="{{ expenseCat.id }}" > {{ expenseCat.name }}  <br />
-  	  {% endfor %}
-  	  Purchase Place: <br />
-  	  {% for place in purchasePlace %}
-  			<input type="checkbox" name="place[]" value="{{ place.id }}" > {{ place.name }}  <br />
-  	  {% endfor %}
-      Order and order direction: <br />
-      <select id="select_order">
-        <option value="purchase_date">Purchase date</option>
-        <option value="product">Product</option>
-        <option value="description">Description</option>
-        <option value="weight">Weight</option>
-        <option value="price">Price</option>
-        <option value="quantity">Quantity</option>
-        <option value="totalprice">Total price</option>
-        <option value="paymentmethod">Payment method</option>
-        <option value="categoryofexpense">Category of expense</option>
-        <option value="typeofexpense">Type of expense</option>
-        <option value="place">Place</option>
-        <option value="comment">Comment</option>
-      </select>
-      <select id="select_order_direction">
-        <option value="ASC">ASC</option>
-        <option value="DESC">DESC</option>
-      </select><br />
-      <input type="submit" name="Show" value="Show">
-    </form>
+    <span class="filter_tool"><img src="{{asset('images/icons8-filter-50.png')}}" title="Show Filter"></span>
+    <span class="add_tool"><img src="{{asset('images/icons8-plus-50.png')}}" title="Create Expense"></span>
+    <div class="filter_section hide">
+      <h2>Search filter</h2>
+      <p>Please select criteria in order to display expenses</p>
+      <form id="criteria_form">
+        From date: <input type="text" name="from_date" id="datepicker1"><br />
+        To date: <input type="text" name ="to_date" id="datepicker2"><br />
+    	  Description: <input type="text" id="description" name="description"><br />
+    	  Weight min: <input type="text" id="weight_min" name="weight_min"><br />
+    	  Weight max: <input type="text" id="weight_max" name="weight_max"><br />
+    	  Price min: <input type="text" id="price_min" name="price_min"><br />
+    	  Price max: <input type="text" id="price_max" name="price_max"><br />
+    	  Quantity min: <input type="text" id="quantity_min" name="quantity_min"><br />
+    	  Quantity max: <input type="text" id="quantity_max" name="quantity_max"><br />
+    	  Comment: <input type="text" id="comment" name="comment"><br />
+    	  Products: <br />
+    	  {% for product in products %}
+    			<input type="checkbox" name="product[]" value="{{ product.id }}" > {{ product.name }}  <br />
+    	  {% endfor %}
+    	  Type of expense: <br />
+    	  {% for type in expenseType %}
+    			<input type="checkbox" name="expense_type[]" value="{{ type.id }}" > {{ type.name }}  <br />
+    	  {% endfor %}
+    	  Payment Method: <br />
+    	  {% for payment in paymentMethod %}
+    			<input type="checkbox" name="payment[]" value="{{ payment.id }}" > {{ payment.name }}  <br />
+    	  {% endfor %}
+    	  Expense Category: <br />
+    	  {% for expenseCat in expenseCategory %}
+    			<input type="checkbox" name="expense_category[]" value="{{ expenseCat.id }}" > {{ expenseCat.name }}  <br />
+    	  {% endfor %}
+    	  Purchase Place: <br />
+    	  {% for place in purchasePlace %}
+    			<input type="checkbox" name="place[]" value="{{ place.id }}" > {{ place.name }}  <br />
+    	  {% endfor %}
+        Order and order direction: <br />
+        <select id="select_order">
+          <option value="purchase_date">Purchase date</option>
+          <option value="product">Product</option>
+          <option value="description">Description</option>
+          <option value="weight">Weight</option>
+          <option value="price">Price</option>
+          <option value="quantity">Quantity</option>
+          <option value="totalprice">Total price</option>
+          <option value="paymentmethod">Payment method</option>
+          <option value="categoryofexpense">Category of expense</option>
+          <option value="typeofexpense">Type of expense</option>
+          <option value="place">Place</option>
+          <option value="comment">Comment</option>
+        </select>
+        <select id="select_order_direction">
+          <option value="ASC">ASC</option>
+          <option value="DESC">DESC</option>
+        </select><br />
+        <input type="submit" name="Show" value="Show">
+      </form>
+  </div>
 	<div id="result_append_section"></div>
     <script>
       $( function() {
@@ -145,7 +150,7 @@
     		}).done(function( msg ) {
           if(msg.status == "ok") {
 	        var results = msg.content;
-		      var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date <span class=\"date_sort\">(Sort)</span></th><th>Product <span class=\"product_sort\">(Sort)</span></th><th>Description <span class=\"description_sort\">(Sort)</span></th><th>Weight <span class=\"weight_sort\">(Sort)</span></th><th>Price <span class=\"price_sort\">(Sort)</span></th><th>Quantity <span class=\"quantity_sort\">(Sort)</span></th><th>Total price <span class=\"totalprice_sort\">(Sort)</span></th><th>Type of expense <span class=\"typeofexpense_sort\">(Sort)</span></th><th>Payment method <span class=\"paymentmethod_sort\">(Sort)</span></th><th>Category of expense <span class=\"categoryofexpense_sort\">(Sort)</span></th><th>Place <span class=\"place_sort\">(Sort)</span></th><th>Comment <span class=\"comment_sort\">(Sort)</span></th><th>Edit</th><th>Delete</th></tr>";
+		      var string_result = "<table><tbody><tr><th>l.p.</th><th>Purchase date <span class=\"date_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Product <span class=\"product_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Description <span class=\"description_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Weight <span class=\"weight_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Price <span class=\"price_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Quantity <span class=\"quantity_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Total price <span class=\"totalprice_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Type of expense <span class=\"typeofexpense_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Payment method <span class=\"paymentmethod_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Category of expense <span class=\"categoryofexpense_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Place <span class=\"place_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Comment <span class=\"comment_sort\"><img src=\"{{asset('images/icons8-sort-filled-50.png')}}\" class=\"updownarrows\"><img src=\"{{asset('images/icons8-sort-down-filled-50.png')}}\" class=\"downarrows hide_arrows\"><img src=\"{{asset('images/icons8-sort-up-filled-50.png')}}\" class=\"uparrows hide_arrows\"></span></th><th>Edit</th><th>Delete</th></tr>";
 		      for(var i = 0; i < results .length; i++) {
   					var id = results[i][0].id;
   					var date = results[i][0].purchaseDate;
@@ -191,28 +196,39 @@
     });
   </script>
   <script>
+  //TODO do dokonczenia te strzalki zeby sie wszystko dobrze pokazywalo
     function sortingColumn(classColumnName, orderValue) {
       $(classColumnName).click(function(){
-        $("#select_order").val(orderValue);
-        if($(this).text() == "UP") {
-          $('#select_order_direction').val("DESC");
-          $("#criteria_form").removeClass();
-          $("#criteria_form").addClass(classColumnName + "_desc");
-        } else {
+        $('#select_order').val(orderValue);
+        var classColumnNameWithoutDot = classColumnName.substr(1);
+        if(!($(classColumnName + ' .updownarrows').hasClass('hide_arrows'))) {
           $('#select_order_direction').val("ASC");
           $("#criteria_form").removeClass();
-          $("#criteria_form").addClass(classColumnName + "_asc");
+          $("#criteria_form").addClass(classColumnNameWithoutDot + "_asc");
+        } else if(!($(classColumnName + ' .uparrows').hasClass('hide_arrows'))) {
+          $('#select_order_direction').val("DESC");
+          $("#criteria_form").removeClass();
+          $("#criteria_form").addClass(classColumnNameWithoutDot + "_desc");
+        } else if(!($(classColumnName + ' .downarrows').hasClass('hide_arrows'))) {
+          $('#select_order_direction').val("ASC");
+          $("#criteria_form").removeClass();
+          $("#criteria_form").addClass(classColumnNameWithoutDot + "_asc");
         }
         $("#criteria_form").submit();
       })
     }
     function changeSortingColumn(classColumnName) {
-      if($("#criteria_form").hasClass(classColumnName + "_asc")) {
-        $(classColumnName).text("UP");
+      var classColumnNameWithoutDot = classColumnName.substr(1);
+      if($("#criteria_form").hasClass(classColumnNameWithoutDot + "_asc")) {
+        $(classColumnName + ' .updownarrows').addClass('hide_arrows');
+        $(classColumnName + ' .downarrows').addClass('hide_arrows');
+        $(classColumnName + ' .uparrows').removeClass('hide_arrows');
         $(this).removeClass();
       }
-      if($("#criteria_form").hasClass(classColumnName + "_desc")) {
-        $(classColumnName).text("DOWN");
+      if($("#criteria_form").hasClass(classColumnNameWithoutDot + "_desc")) {
+        $(classColumnName + ' .updownarrows').addClass('hide_arrows');
+        $(classColumnName + ' .downarrows').removeClass('hide_arrows');
+        $(classColumnName + ' .uparrows').addClass('hide_arrows');
         $(this).removeClass();
       }
     }
@@ -258,52 +274,91 @@
       });
     });
   </script>
-	<div id="create_new">
+	<div id="create_new" class="hide">
+    <div class="close_ico"><img src="{{asset('images/icons8-close-button-filled-50.png')}}"></div>
 		<h2>Create expense</h2>
 		<form id="create_expense">
-			Purchase date: <input type="text" name="create_purchase_date" id="datepicker3"><br />
-			Description: <input type="text" id="create_description" name="create_description"><br />
-			Weight: <input type="text" id="create_weight" name="create_weight"><br />
-			Price: <input type="text" id="create_price" name="create_price"><br />
-			Quantity: <input type="text" id="create_quantity" name="create_quantity"><br />
-			Comment: <input type="text" id="create_comment" name="create_comment"><br />
-			Start type product's name: <input type="create_product" name="create_product" id="create_product">
-			<select id="select_product">
-				<option value="0">Create new</option>
-				{% for product in products %}
-					<option value="{{ product.id }}">{{ product.name }}</option>
-				{% endfor %}
-			</select><br />
-			Start type type expense: <input type="create_type_expense" name="create_type_expense" id="create_type_expense">
-			<select id="select_type_expense">
-				<option value="0">Create new</option>
-				{% for type in expenseType %}
-					<option value="{{ type.id }}">{{ type.name }}</option>
-				{% endfor %}
-			</select><br />
-			Start type payment method: <input type="create_payment_method" name="create_payment_method" id="create_payment_method">
-			<select id="select_payment_method">
-				<option value="0">Create new</option>
-				{% for payment in paymentMethod %}
-					<option value="{{ payment.id }}">{{ payment.name }}</option>
-				{% endfor %}
-			</select><br />
-			Start type expense category: <input type="create_expense_category" name="create_expense_category" id="create_expense_category">
-			<select id="select_expense_category">
-				<option value="0">Create new</option>
-				{% for expenseCat in expenseCategory %}
-					<option value="{{ expenseCat.id }}">{{ expenseCat.name }}</option>
-				{% endfor %}
-			</select><br />
-			Start type purchase place: <input type="create_purchase_place" name="create_purchase_place" id="create_purchase_place">
-			<select id="select_purchase_place">
-				<option value="0">Create new</option>
-				{% for place in purchasePlace %}
-					<option value="{{ place.id }}">{{ place.name }}</option>
-				{% endfor %}
-			</select><br />
-      Same shoppping? <input type="checkbox" name="same_shopping" value="1" id="same_shopping" checked><br />
-      <input type="submit" name="Create" value="Create">
+      <div class="form_row">
+        <label for="datepicker3">Purchase date: </label>
+  			<input type="text" name="create_purchase_date" id="datepicker3">
+      </div>
+      <div class="form_row">
+        <label for="create_description">Description: </label>
+        <input type="text" id="create_description" name="create_description">
+      </div>
+      <div class="form_row">
+        <label for="create_weight">Weight: </label>
+        <input type="text" id="create_weight" name="create_weight">
+      </div>
+      <div class="form_row">
+        <label for="create_price">Price: </label>
+        <input type="text" id="create_price" name="create_price">
+      </div>
+      <div class="form_row">
+        <label for="create_quantity">Quantity: </label>
+        <input type="text" id="create_quantity" name="create_quantity">
+      </div>
+      <div class="form_row">
+        <label for="create_comment">Comment: </label>
+        <input type="text" id="create_comment" name="create_comment">
+      </div>
+      <div class="form_row">
+        <label for="">Start type product's name: </label>
+        <input type="create_product" name="create_product" id="create_product">
+        <select id="select_product">
+  				<option value="0">Create new</option>
+  				{% for product in products %}
+  					<option value="{{ product.id }}">{{ product.name }}</option>
+  				{% endfor %}
+  			</select>
+      </div>
+      <div class="form_row">
+        <label for="">Start type type expense: </label>
+        <input type="create_type_expense" name="create_type_expense" id="create_type_expense">
+        <select id="select_type_expense">
+  				<option value="0">Create new</option>
+  				{% for type in expenseType %}
+  					<option value="{{ type.id }}">{{ type.name }}</option>
+  				{% endfor %}
+  			</select>
+      </div>
+      <div class="form_row">
+        <label for="">Start type payment method: </label>
+        <input type="create_payment_method" name="create_payment_method" id="create_payment_method">
+  			<select id="select_payment_method">
+  				<option value="0">Create new</option>
+  				{% for payment in paymentMethod %}
+  					<option value="{{ payment.id }}">{{ payment.name }}</option>
+  				{% endfor %}
+  			</select>
+      </div>
+      <div class="form_row">
+        <label for="">Start type expense category: </label>
+        <input type="create_expense_category" name="create_expense_category" id="create_expense_category">
+        <select id="select_expense_category">
+  				<option value="0">Create new</option>
+  				{% for expenseCat in expenseCategory %}
+  					<option value="{{ expenseCat.id }}">{{ expenseCat.name }}</option>
+  				{% endfor %}
+  			</select>
+      </div>
+      <div class="form_row">
+        <label for="create_purchase_place">Start type purchase place: </label>
+        <input type="create_purchase_place" name="create_purchase_place" id="create_purchase_place">
+  			<select id="select_purchase_place">
+  				<option value="0">Create new</option>
+  				{% for place in purchasePlace %}
+  					<option value="{{ place.id }}">{{ place.name }}</option>
+  				{% endfor %}
+  			</select>
+      </div>
+      <div class="form_row">
+        <label for="same_shopping">Same shoppping?</label>
+        <input type="checkbox" name="same_shopping" value="1" id="same_shopping" checked>
+      </div>
+      <div class="form_row">
+        <input type="submit" name="Create" value="Create">
+      </div>
 		</form>
     <div id="create_result_area"></div>
 	</div>
@@ -472,5 +527,6 @@
 
     });
   </script>
+  <script src="{{ asset('js/main.js') }}"></script>
   </body>
 </html>

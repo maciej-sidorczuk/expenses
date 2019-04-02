@@ -1,0 +1,9 @@
+$('.filter_tool').click(function(){
+  $('.filter_section').toggleClass('hide');
+});
+$('.add_tool').click(function(){
+  $('#create_new').toggleClass('hide');
+});
+$('.close_ico').click(function(){
+  $('#create_new').toggleClass('hide');
+});
