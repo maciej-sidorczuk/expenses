@@ -1,0 +1,88 @@
+<div id="create_new" class="hide">
+  <div class="close_ico"><img src="{{asset('images/icons8-close-button-filled-50.png')}}"></div>
+  <h2>Create expense</h2>
+  <form id="create_expense">
+    <div class="form_row">
+      <label for="datepicker3">Purchase date: </label>
+      <input type="text" name="create_purchase_date" id="datepicker3">
+    </div>
+    <div class="form_row">
+      <label for="create_description">Description: </label>
+      <input type="text" id="create_description" name="create_description">
+    </div>
+    <div class="form_row">
+      <label for="create_weight">Weight: </label>
+      <input type="text" id="create_weight" name="create_weight">
+    </div>
+    <div class="form_row">
+      <label for="create_price">Price: </label>
+      <input type="text" id="create_price" name="create_price">
+    </div>
+    <div class="form_row">
+      <label for="create_quantity">Quantity: </label>
+      <input type="text" id="create_quantity" name="create_quantity">
+    </div>
+    <div class="form_row">
+      <label for="create_comment">Comment: </label>
+      <input type="text" id="create_comment" name="create_comment">
+    </div>
+    <div class="form_row">
+      <label for="">Start type product's name: </label>
+      <input type="create_product" name="create_product" id="create_product">
+      <select id="select_product">
+        <option value="0">Create new</option>
+        {% for product in products %}
+          <option value="{{ product.id }}">{{ product.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form_row">
+      <label for="">Start type type expense: </label>
+      <input type="create_type_expense" name="create_type_expense" id="create_type_expense">
+      <select id="select_type_expense">
+        <option value="0">Create new</option>
+        {% for type in expenseType %}
+          <option value="{{ type.id }}">{{ type.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form_row">
+      <label for="">Start type payment method: </label>
+      <input type="create_payment_method" name="create_payment_method" id="create_payment_method">
+      <select id="select_payment_method">
+        <option value="0">Create new</option>
+        {% for payment in paymentMethod %}
+          <option value="{{ payment.id }}">{{ payment.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form_row">
+      <label for="">Start type expense category: </label>
+      <input type="create_expense_category" name="create_expense_category" id="create_expense_category">
+      <select id="select_expense_category">
+        <option value="0">Create new</option>
+        {% for expenseCat in expenseCategory %}
+          <option value="{{ expenseCat.id }}">{{ expenseCat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form_row">
+      <label for="create_purchase_place">Start type purchase place: </label>
+      <input type="create_purchase_place" name="create_purchase_place" id="create_purchase_place">
+      <select id="select_purchase_place">
+        <option value="0">Create new</option>
+        {% for place in purchasePlace %}
+          <option value="{{ place.id }}">{{ place.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form_row">
+      <label for="same_shopping">Same shoppping?</label>
+      <input type="checkbox" name="same_shopping" value="1" id="same_shopping" checked>
+    </div>
+    <div class="form_row">
+      <input type="submit" name="Create" value="Create">
+    </div>
+  </form>
+  <div id="create_result_area"></div>
+</div>
