@@ -1,35 +1,40 @@
-<div id="create_new" class="hide">
+<div id="{{sectionId}}" class="hide">
   <div class="close_ico"><img src="{{asset('images/icons8-close-button-filled-50.png')}}"></div>
-  <h2>Create expense</h2>
-  <form id="create_expense">
+  <h2>{{title}}</h2>
+  <form id="{{formId}}">
     <div class="form_row">
-      <label for="datepicker3">Purchase date: </label>
-      <input type="text" name="create_purchase_date" id="datepicker3">
+      <label for="{{dateId}}">Purchase date: </label>
+      <input type="text" name="{{dateName}}" id="{{dateId}}">
     </div>
     <div class="form_row">
-      <label for="create_description">Description: </label>
-      <input type="text" id="create_description" name="create_description">
+      <label for="{{descriptionId}}">Description: </label>
+      <input type="text" id="{{descriptionId}}" name="{{descriptionId}}">
     </div>
     <div class="form_row">
-      <label for="create_weight">Weight: </label>
-      <input type="text" id="create_weight" name="create_weight">
+      <label for="{{weightId}}">Weight: </label>
+      <input type="text" id="{{weightId}}" name="{{weightId}}">
     </div>
     <div class="form_row">
-      <label for="create_price">Price: </label>
-      <input type="text" id="create_price" name="create_price">
+      <label for="{{priceId}}">Price: </label>
+      <input type="text" id="{{priceId}}" name="{{priceId}}">
     </div>
     <div class="form_row">
-      <label for="create_quantity">Quantity: </label>
-      <input type="text" id="create_quantity" name="create_quantity">
+      <label for="{{quantityId}}">Quantity: </label>
+      <input type="text" id="{{quantityId}}" name="{{quantityId}}">
     </div>
     <div class="form_row">
-      <label for="create_comment">Comment: </label>
-      <input type="text" id="create_comment" name="create_comment">
+      <label for="{{commentId}}">Comment: </label>
+      <input type="text" id="{{commentId}}" name="{{commentId}}">
     </div>
     <div class="form_row">
-      <label for="">Start type product's name: </label>
-      <input type="create_product" name="create_product" id="create_product">
-      <select id="select_product">
+      {% if mode == "create" %}
+        <label for="{{productId}}">Start type product's name: </label>
+        <input type="text" name="{{productId}}" id="{{productId}}">
+      {% endif %}
+      {% if mode == "edit" %}
+        <label for="{{productId}}">Product's name: </label>
+      {% endif %}
+      <select id="{{selectProductId}}">
         <option value="0">Create new</option>
         {% for product in products %}
           <option value="{{ product.id }}">{{ product.name }}</option>
@@ -37,9 +42,14 @@
       </select>
     </div>
     <div class="form_row">
-      <label for="">Start type type expense: </label>
-      <input type="create_type_expense" name="create_type_expense" id="create_type_expense">
-      <select id="select_type_expense">
+      {% if mode == "create" %}
+        <label for="{{typeExpenseId}}">Start type type expense: </label>
+        <input type="text" name="{{typeExpenseId}}" id="{{typeExpenseId}}">
+      {% endif %}
+      {% if mode == "edit" %}
+        <label for="{{typeExpenseId}}">Type of expense: </label>
+      {% endif %}
+      <select id="{{selectTypExpenseId}}">
         <option value="0">Create new</option>
         {% for type in expenseType %}
           <option value="{{ type.id }}">{{ type.name }}</option>
@@ -47,9 +57,14 @@
       </select>
     </div>
     <div class="form_row">
-      <label for="">Start type payment method: </label>
-      <input type="create_payment_method" name="create_payment_method" id="create_payment_method">
-      <select id="select_payment_method">
+      {% if mode == "create" %}
+        <label for="{{paymentMethodId}}">Start type payment method: </label>
+        <input type="text" name="{{paymentMethodId}}" id="{{paymentMethodId}}">
+      {% endif %}
+      {% if mode == "edit" %}
+        <label for="{{paymentMethodId}}">Payment method: </label>
+      {% endif %}
+      <select id="{{selectPaymentMethodId}}">
         <option value="0">Create new</option>
         {% for payment in paymentMethod %}
           <option value="{{ payment.id }}">{{ payment.name }}</option>
@@ -57,9 +72,14 @@
       </select>
     </div>
     <div class="form_row">
-      <label for="">Start type expense category: </label>
-      <input type="create_expense_category" name="create_expense_category" id="create_expense_category">
-      <select id="select_expense_category">
+      {% if mode == "create" %}
+        <label for="{{expenseCategoryId}}">Start type expense category: </label>
+        <input type="text" name="{{expenseCategoryId}}" id="{{expenseCategoryId}}">
+      {% endif %}
+      {% if mode == "edit" %}
+        <label for="{{expenseCategoryId}}">Expense category: </label>
+      {% endif %}
+      <select id="{{selectExpenseCategoryId}}">
         <option value="0">Create new</option>
         {% for expenseCat in expenseCategory %}
           <option value="{{ expenseCat.id }}">{{ expenseCat.name }}</option>
@@ -67,22 +87,37 @@
       </select>
     </div>
     <div class="form_row">
-      <label for="create_purchase_place">Start type purchase place: </label>
-      <input type="create_purchase_place" name="create_purchase_place" id="create_purchase_place">
-      <select id="select_purchase_place">
+    {% if mode == "create" %}
+        <label for="{{purchasePlaceId}}">Start type purchase place: </label>
+        <input type="text" name="{{purchasePlaceId}}" id="{{purchasePlaceId}}">
+    {% endif %}
+    {% if mode == "edit" %}
+      <label for="{{purchasePlaceId}}">Purchase place: </label>
+    {% endif %}
+      <select id="{{selectPurchasePlace}}">
         <option value="0">Create new</option>
         {% for place in purchasePlace %}
           <option value="{{ place.id }}">{{ place.name }}</option>
         {% endfor %}
       </select>
     </div>
+    {% if sameShopping == true %}
     <div class="form_row">
       <label for="same_shopping">Same shoppping?</label>
       <input type="checkbox" name="same_shopping" value="1" id="same_shopping" checked>
     </div>
+    {% endif %}
+    {% if mode == "edit" %}
+      <input type="hidden" name="edit_expenseId" id="edit_expenseId" value="" />
+    {% endif %}
     <div class="form_row">
-      <input type="submit" name="Create" value="Create">
+      <input type="submit" name="{{submit}}" value="{{submit}}">
     </div>
   </form>
-  <div id="create_result_area"></div>
+  {% if mode == "create" %}
+    <div id="create_result_area"></div>
+  {% endif %}
+  {% if mode == "edit" %}
+    <div id="edit_result_area"></div>
+  {% endif %}
 </div>

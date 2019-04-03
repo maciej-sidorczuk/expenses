@@ -4,7 +4,7 @@
 .hide_arrows {
   display: none;
 }
-#create_new {
+#create_new, #edit_expense_section {
   max-width: 650px;
   position: fixed;
   left: 50%;

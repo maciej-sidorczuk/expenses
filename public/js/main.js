@@ -6,7 +6,8 @@ $('.add_tool').click(function(){
   $('#create_new').toggleClass('hide');
 });
 $('.close_ico').click(function(){
-  $('#create_new').toggleClass('hide');
+  $(this).parent().toggleClass('hide');
+  $("#edit_result_area").empty();
 });
 //head icons functions - end
 //date functions
@@ -21,6 +22,10 @@ $( function() {
 $( function() {
   $( "#datepicker3" ).datepicker();
     $( "#datepicker3" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+} );
+$( function() {
+  $( "#edit_datepicker3" ).datepicker();
+    $( "#edit_datepicker3" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
 } );
 //date functions - end
 //sorting columns
@@ -354,9 +359,9 @@ $("#criteria_form").submit(function(e){
       var place = results[i][0].placeId.name;
       var comment = results[i][0].comment;
       var counter = i + 1;
-      string_result += "<tr><td>" + counter  + "</td><td>" + format_date + "</td><td>" + product + "</td><td>" + description + "</td><td>" + weight + "</td><td>" + price + "</td><td>" + quantity + "</td><td>" + total_price + "</td><td>" + type_of_expense + "</td><td>" + payment_method + "</td><td>" + category_of_expense + "</td><td>" + place + "</td><td>" + comment + "</td>" + "<td><input type=\"radio\" name=\"edit\" value=\"" + id + "\"></td>" + "<td><input type=\"checkbox\" name=\"delete_checkbox\" value=\"" + id + "\"></td></tr>";
+      string_result += "<tr><td class=\"rowNumber\">" + counter  + "</td><td class=\"rowDate\">" + format_date + "</td><td class=\"rowProduct\">" + product + "</td><td class=\"rowDescription\">" + description + "</td><td class=\"rowWeight\">" + weight + "</td><td class=\"rowPrice\">" + price + "</td><td class=\"rowQuantity\">" + quantity + "</td><td class=\"rowTotalPrice\">" + total_price + "</td><td class=\"rowTypeOfExpense\">" + type_of_expense + "</td><td class=\"rowPaymentMethod\">" + payment_method + "</td><td class=\"rowCategoryOfExpense\">" + category_of_expense + "</td><td class=\"rowPlace\">" + place + "</td><td class=\"rowComment\">" + comment + "</td>" + "<td><input type=\"radio\" name=\"edit\" value=\"" + id + "\"></td>" + "<td><input type=\"checkbox\" name=\"delete_checkbox\" value=\"" + id + "\"></td></tr>";
     }
-    string_result += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><button type=\"button\">Edit</button></td><td><button type=\"button\" id=\"delete_button\">Delete</button></td></tr>";
+    string_result += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><button type=\"button\" id=\"delete_button\">Delete</button></td></tr>";
     $("#result_append_section table tbody tr:not(.table_header)").remove();
     $(string_result).appendTo("#result_append_section table tbody");
     changeSortingColumn('.date_sort');
@@ -376,3 +381,123 @@ $("#criteria_form").submit(function(e){
 });
 });
 //form scripts - end
+//edit form
+$(document).on("expenseTableReady", function(){
+  $('input[name="edit"]').off();
+  $('input[name="edit"]').click(function(){
+    var inputValue = $(this).val();
+    $('#edit_expense_section').removeClass('hide');
+    $('#edit_datepicker3').val($(this).parent().parent().find('.rowDate').text());
+    $('#edit_description').val($(this).parent().parent().find('.rowDescription').text());
+    $('#edit_weight').val($(this).parent().parent().find('.rowWeight').text());
+    $('#edit_price').val($(this).parent().parent().find('.rowPrice').text());
+    $('#edit_quantity').val($(this).parent().parent().find('.rowQuantity').text());
+    var typeExpenseOption = $(this).parent().parent().find('.rowTypeOfExpense').text();
+    $('#edit_select_type_expense option').each(function(){
+      var optionValue = $(this).text();
+      if(optionValue == typeExpenseOption) {
+        $(this).prop('selected', true);
+      }
+    });
+    $('#edit_type_expense').val($(this).parent().parent().find('.rowTypeOfExpense').text());
+    var paymentMethodOption = $(this).parent().parent().find('.rowPaymentMethod').text();
+    $('#edit_select_payment_method option').each(function(){
+      var optionValue = $(this).text();
+      if(optionValue == paymentMethodOption) {
+        $(this).prop('selected', true);
+      }
+    });
+    var expenseCategoryOption = $(this).parent().parent().find('.rowCategoryOfExpense').text();
+    $('#edit_select_expense_category option').each(function(){
+      var optionValue = $(this).text();
+      if(optionValue == expenseCategoryOption) {
+        $(this).prop('selected', true);
+      }
+    });
+    var purchasePlaceOption = $(this).parent().parent().find('.rowPlace').text();
+    $('#edit_select_purchase_place option').each(function(){
+      var optionValue = $(this).text();
+      if(optionValue == purchasePlaceOption) {
+        $(this).prop('selected', true);
+      }
+    });
+    var productOption = $(this).parent().parent().find('.rowProduct').text();
+    $('#edit_select_product option').each(function(){
+      var optionValue = $(this).text();
+      if(optionValue == productOption) {
+        $(this).prop('selected', true);
+      }
+    });
+    $('#edit_comment').val($(this).parent().parent().find('.rowComment').text());
+    $('#edit_expenseId').val(inputValue);
+  });
+});
+
+$("#edit_expense").submit(function(e){
+  e.preventDefault();
+  console.log("wykonanie");
+  var data = {};
+  if($("#edit_datepicker3").val() != "") {
+    //TODO validation, field required
+    data.date = $("#edit_datepicker3").val();
+  }
+  if($("#edit_description").val() != "") {
+    //TODO validation
+    data.description = $("#edit_description").val();
+  }
+  if($("#edit_weight").val() != "") {
+    //TODO validation
+    data.weight = $("#edit_weight").val();
+  }
+  if($("#edit_price").val() != "") {
+    //TODO validation, field required
+    data.price = $("#edit_price").val();
+  }
+  if($("#edit_quantity").val() != "") {
+    //TODO validation, field required
+    data.quantity = $("#edit_quantity").val();
+  }
+  if($("#edit_comment").val() != "") {
+    //TODO validation
+    data.comment = $("#edit_comment").val();
+  }
+  if($("#edit_select_product").val() != 0) {
+    data.product_id = $("#edit_select_product").val();
+  }
+  if($("#edit_select_type_expense").val() != 0) {
+    data.type_of_expense_id = $("#edit_select_type_expense").val();
+  }
+  if($("#edit_select_payment_method").val() != 0) {
+    data.payment_method_id = $("#edit_select_payment_method").val();
+  }
+  if($("#edit_select_expense_category").val() != 0) {
+    data.category_of_expense_id = $("#edit_select_expense_category").val();
+  }
+  if($("#edit_select_purchase_place").val() != 0) {
+    data.place_id = $("#edit_select_purchase_place").val();
+  }
+  data.id = $("#edit_expenseId").val();
+  $.ajax({
+    method: "POST",
+    url: "/expense/edit",
+    data
+  })
+  .done(function( msg ) {
+    $("#edit_result_area").empty();
+    if(msg.status == "ok") {
+      $("#edit_result_area").empty();
+      $("#edit_result_area").text("Expense was updated. This window will close in 3 seconds");
+      setTimeout(function(){
+        $("#edit_result_area").empty();
+        $('#edit_expense_section').addClass('hide');
+      }, 3000);
+      //refresh table
+      $("#criteria_form").submit();
+    } else if(msg.status == "error") {
+      $("#edit_result_area").empty();
+      $("#edit_result_area").text(msg.message);
+    }
+  });
+
+});
+//edit form - end

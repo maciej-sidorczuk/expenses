@@ -9,7 +9,68 @@
   <body>
     <h1>Your expenses</h1>
     {{ include('expense/filterTool.html.twig', { 'products': products, 'expenseType': expenseType, 'paymentMethod': paymentMethod, 'expenseCategory' : expenseCategory, 'purchasePlace': purchasePlace }) }}
-    {{ include('expense/createForm.html.twig', { 'products': products, 'expenseType': expenseType, 'paymentMethod': paymentMethod, 'expenseCategory' : expenseCategory, 'purchasePlace': purchasePlace }) }}
+    {{ include('expense/createForm.html.twig', {
+    'products': products,
+    'expenseType': expenseType,
+    'paymentMethod': paymentMethod,
+    'expenseCategory' : expenseCategory,
+    'purchasePlace': purchasePlace,
+    'sectionId': 'create_new',
+    'formId' : 'create_expense',
+    'title': 'Create expense',
+    'dateId' : 'datepicker3',
+    'dateName' : 'create_purchase_date',
+    'descriptionId' : 'create_description',
+    'weightId' : 'create_weight',
+    'priceId' : 'create_price',
+    'quantityId' : 'create_quantity',
+    'commentId' : 'create_comment',
+    'productId' : 'create_product',
+    'selectProductId' : 'select_product',
+    'typeExpenseId' : 'create_type_expense',
+    'selectTypExpenseId' : 'select_type_expense',
+    'paymentMethodId' : 'create_payment_method',
+    'selectPaymentMethodId' : 'select_payment_method',
+    'expenseCategoryId' : 'create_expense_category',
+    'selectExpenseCategoryId' : 'select_expense_category',
+    'purchasePlaceId' : 'create_purchase_place',
+    'selectPurchasePlace' : 'select_purchase_place',
+    'sameShopping' : true,
+    'submit' : 'Create',
+    'mode' : 'create'
+    })
+    }}
+    {{ include('expense/createForm.html.twig', {
+    'products': products,
+    'expenseType': expenseType,
+    'paymentMethod': paymentMethod,
+    'expenseCategory' : expenseCategory,
+    'purchasePlace': purchasePlace,
+    'sectionId': 'edit_expense_section',
+    'formId' : 'edit_expense',
+    'title' : 'Edit expense',
+    'dateId' : 'edit_datepicker3',
+    'dateName' : 'edit_purchase_date',
+    'descriptionId' : 'edit_description',
+    'weightId' : 'edit_weight',
+    'priceId' : 'edit_price',
+    'quantityId' : 'edit_quantity',
+    'commentId' : 'edit_comment',
+    'productId' : 'edit_product',
+    'selectProductId' : 'edit_select_product',
+    'typeExpenseId' : 'edit_type_expense',
+    'selectTypExpenseId' : 'edit_select_type_expense',
+    'paymentMethodId' : 'edit_payment_method',
+    'selectPaymentMethodId' : 'edit_select_payment_method',
+    'expenseCategoryId' : 'edit_expense_category',
+    'selectExpenseCategoryId' : 'edit_select_expense_category',
+    'purchasePlaceId' : 'edit_purchase_place',
+    'selectPurchasePlace' : 'edit_select_purchase_place',
+    'sameShopping' : false,
+    'submit' : 'Edit',
+    'mode' : 'edit'
+    })
+    }}
     <script src="{{ asset('js/main.js') }}"></script>
   </body>
 </html>
