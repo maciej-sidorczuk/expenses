@@ -9,6 +9,9 @@ $('.close_ico').click(function(){
   $(this).parent().toggleClass('hide');
   $("#edit_result_area").empty();
 });
+$('.close_ico_filter').click(function(){
+  $(this).parent().parent().toggleClass('hide');
+});
 //head icons functions - end
 //date functions
 $( function() {

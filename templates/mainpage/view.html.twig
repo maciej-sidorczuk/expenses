@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Expense application - Main Menu{% endblock %}
+
+{% block body %}
+  <h2>Main Menu</h2>
+  <ul>
+    <li><a href="{{ path('expense_view') }}">Your expenses</a></li>
+  </ul>
+{% endblock %}

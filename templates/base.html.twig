@@ -3,10 +3,14 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <link rel="stylesheet" href="{{asset('css/style.css')}}">
+        {% block stylesheetshead %}{% endblock %}
+        {% block scriptshead %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        <h1><a href="{{ path('index_page') }}">Expense application</a></h1>
+        {% block body %}
+          {% block scriptsbody %}{% endblock %}
+        {% endblock %}      
     </body>
 </html>

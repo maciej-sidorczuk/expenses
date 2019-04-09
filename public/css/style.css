@@ -12,15 +12,61 @@
   transform: translate(-50%, -50%);
   padding: 20px;
   border: 1px solid black;
+  background-color: #fff;
 }
 #create_new h2 {
   text-align: center;
 }
-.close_ico {
+.close_ico, .close_ico_filter {
   position: absolute;
   right: 5px;
   top: 5px;
 }
 .form_row {
   margin-bottom: 10px;
+}
+.filter_section {
+  position: fixed;
+  max-width: 650px;
+  width: 650px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border: 1px solid black;
+  max-height: 90vh;
+  overflow: auto;
+  background-color: #fff;
+}
+.extended_section_filter {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.extended_section_filter > div {
+  width: 33%;
+}
+.extended_section_filter > div:first-child {
+  width: 100%;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+.basic_section_filter {
+  display: flex;
+  flex-wrap: wrap;
+}
+.basic_section_filter > div {
+  width: 50%;
+  margin-bottom: 5px;
+  display: flex;
+}
+.basic_section_filter > div > label {
+  width: 40%;
+}
+.basic_section_filter > div > input {
+  width: 50%;
+}
+.submit_section_filter {
+  text-align: right;
+  margin-top: 10px;
 }
