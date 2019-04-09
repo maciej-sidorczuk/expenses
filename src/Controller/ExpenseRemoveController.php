@@ -15,13 +15,12 @@ class ExpenseRemoveController extends AbstractController
     public function index(Request $request)
     {
         $id = $request->request->get('id');
-        file_put_contents('/var/www/mswydatki.pl/debug2.log', print_r($id, true), FILE_APPEND);
         if(isset($id) && !empty($id)) {
           if(is_array($id)) {
             $expense = $this->getDoctrine()
             ->getRepository(Expense::class)
             ->deleteAll($id);
-            return $this->json(array('status' => 'ok'));        
+            return $this->json(array('status' => 'ok'));
           } else {
             $expense= $this->getDoctrine()
             ->getRepository(Expense::class)

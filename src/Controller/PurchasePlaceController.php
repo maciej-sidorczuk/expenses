@@ -24,10 +24,9 @@ class PurchasePlaceController extends AbstractController
           ->add('save', SubmitType::class, array('label' => 'Create Place'))
           ->getForm();
 
-        $form->handleRequest($request);  
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-          file_put_contents('/var/www/mswydatki.pl/wydatki/log.log', 'wykonuje sie', FILE_APPEND);
           $place = $form->getData();
           $entityManager = $this->getDoctrine()->getManager();
           $entityManager->persist($place);
