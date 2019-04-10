@@ -4,6 +4,12 @@ $('.filter_tool').click(function(){
 });
 $('.add_tool').click(function(){
   $('#create_new').toggleClass('hide');
+  $('#create_new .list_hint').each(function(){
+    var inputElement = $(this).siblings('input');
+    var leftpos = $(inputElement).position().left;
+    $(this).css('left', leftpos + 'px');
+  });
+  //$('.product_list').css('left', $('#create_product').position().left + 'px');
 });
 $('.close_ico').click(function(){
   $(this).parent().toggleClass('hide');
@@ -112,11 +118,19 @@ $(document).on("expenseTableReady", function(){
 });
 //sorting columns - end
 //form scripts
-function searchElementbyAjax(elementName, searchUrl) {
-  var selectElement = "#select_" + elementName;
-  var createElement = "#create_" + elementName;
-  var element_list = $(selectElement).html();
-  $(createElement).keypress(function(){
+jQuery('#create_expense .form_row input').focus(function(){
+  var current_object = jQuery(this);
+  jQuery('#create_expense .form_row input').each(function(){
+    if(current_object == jQuery(this)) {
+      return true;
+    }
+    jQuery(this).next().empty();
+  });
+});
+function searchElementbyAjax(elementName, searchUrl, formType) {
+  var createElement = formType + elementName;
+  var listClass = "." + elementName + "_list";
+  $(createElement).keyup(function(){
     var element_string_name = $(createElement).val();
     if(element_string_name.length > 1) {
       $.ajax({
@@ -126,32 +140,41 @@ function searchElementbyAjax(elementName, searchUrl) {
       }).done(function(msg){
         if(msg.status == "ok") {
           var results = msg.content;
-          $(selectElement).empty();
-          $( '<option value="0">Create new</option>' ).appendTo( selectElement );
+          $(listClass).empty();
+          $(createElement).attr('data-id', 0);
+          var userInput = $(createElement).val().trim().toLowerCase();
           for(var i = 0; i < results.length; i++) {
             var id = results[i].id;
             var resultName = results[i].name;
-            $( '<option value="' + id + '">' + resultName + '</option>' ).appendTo( selectElement );
+            if(resultName.trim().toLowerCase() == userInput) {
+              $(createElement).val(resultName);
+              $(createElement).attr('data-id', id);
+            }
+            $('<li class="list_pos" data-id="' + id + '">' + resultName + '</li>').appendTo(listClass);
           }
+          $(createElement).siblings(listClass).find('.list_pos').off();
+          $(createElement).siblings(listClass).find('.list_pos').click(function(){
+            var element_id = $(this).attr("data-id");
+            var element_name = $(this).text();
+            $(createElement).val(element_name);
+            $(createElement).attr('data-id', element_id);
+            $(listClass).empty();
+          });
         }
       });
     }
   });
-  $(selectElement).change(function(){
-    $(createElement).val($(selectElement + ' option:selected').text());
-  });
-  $(createElement).on('input', function(){
-    if($(createElement).val() == "") {
-        //TODO take list from server. Don't waste browser memory? Check what would be faster.
-        $(selectElement).html(element_list);
-    }
-  });
 }
-searchElementbyAjax('product', '/product/search');
-searchElementbyAjax('payment_method', '/payment/search');
-searchElementbyAjax('purchase_place', '/place/search');
-searchElementbyAjax('expense_category', '/expensecategory/search');
-searchElementbyAjax('type_expense', '/expensetype/search');
+searchElementbyAjax('product', '/product/search', '#create_');
+searchElementbyAjax('payment_method', '/payment/search', '#create_');
+searchElementbyAjax('purchase_place', '/place/search', '#create_');
+searchElementbyAjax('expense_category', '/expensecategory/search', '#create_');
+searchElementbyAjax('type_expense', '/expensetype/search', '#create_');
+searchElementbyAjax('product', '/product/search', '#edit_');
+searchElementbyAjax('payment_method', '/payment/search', '#edit_');
+searchElementbyAjax('purchase_place', '/place/search', '#edit_');
+searchElementbyAjax('expense_category', '/expensecategory/search', '#edit_');
+searchElementbyAjax('type_expense', '/expensetype/search', '#edit_');
 
 function checkAndCreateItem(itemType, itemUrlPart, itemName, data) {
   var showUrl = "/" + itemUrlPart + "/showbyname";
@@ -187,6 +210,29 @@ function checkAndCreateItem(itemType, itemUrlPart, itemName, data) {
   });
 }
 
+function ajaxExpenseAdd(data) {
+  $.ajax({
+    method: "POST",
+    url: "/expense/add",
+    data
+  })
+  .done(function( msg ) {
+    $("#create_result_area").empty();
+    if(msg.status == "ok") {
+      $("#create_result_area").empty();
+      $("#create_result_area").text("Expense was added to database");
+      if($('#same_shopping').attr('checked')) {
+        //TODO clear some fields and reset selects
+      } else {
+        //TODO clear all fields and reset selects
+      }
+    } else if(msg.status == "error") {
+      $("#create_result_area").empty();
+      $("#create_result_area").text(msg.message);
+    }
+  });
+}
+
 $("#create_expense").submit(function(e){
   e.preventDefault();
   var data = {};
@@ -214,62 +260,53 @@ $("#create_expense").submit(function(e){
     //TODO validation
     data.comment = $("#create_comment").val();
   }
-  if($("#select_product").val() == 0) {
+  var needAjaxRequest = false;
+  if($("#create_product").attr('data-id') == 0) {
     var productName = $("#create_product").val();
+    needAjaxRequest = true;
     checkAndCreateItem('product', 'product', productName, data);
   } else {
-    data.product_id = $("#select_product").val();
+    data.product_id = $("#create_product").attr('data-id');
   }
-  if($("#select_type_expense").val() == 0) {
+  if($("#create_type_expense").attr('data-id') == 0) {
     var name = $("#create_type_expense").val();
+    needAjaxRequest = true;
     checkAndCreateItem('type_of_expense', 'expensetype', name, data);
   } else {
-    data.type_of_expense_id = $("#select_type_expense").val();
+    data.type_of_expense_id = $("#create_type_expense").attr('data-id');
   }
-  if($("#select_payment_method").val() == 0) {
+  if($("#create_payment_method").attr('data-id') == 0) {
     var name = $("#create_payment_method").val();
+    needAjaxRequest = true;
     checkAndCreateItem('payment_method', 'payment', name, data);
   } else {
-    data.payment_method_id = $("#select_payment_method").val();
+    data.payment_method_id = $("#create_payment_method").attr('data-id');
   }
-  if($("#select_expense_category").val() == 0) {
+  if($("#create_expense_category").attr('data-id') == 0) {
     var name = $("#create_expense_category").val();
+    needAjaxRequest = true;
     checkAndCreateItem('category_of_expense', 'expensecategory', name, data);
   } else {
-    data.category_of_expense_id = $("#select_expense_category").val();
+    data.category_of_expense_id = $("#create_expense_category").attr('data-id');
   }
-  if($("#select_purchase_place").val() == 0) {
+  if($("#create_purchase_place").attr('data-id') == 0) {
     var name = $("#create_purchase_place").val();
+    needAjaxRequest = true;
     checkAndCreateItem('place', 'purchase/place', name, data);
   } else {
-    data.place_id = $("#select_purchase_place").val();
+    data.place_id = $("#create_purchase_place").attr('data-id');
   }
   var ajaxStopExecuted = false;
-  $( document ).ajaxStop(function() {
-    if(!ajaxStopExecuted) {
-      ajaxStopExecuted = true;
-      $.ajax({
-        method: "POST",
-        url: "/expense/add",
-        data
-      })
-      .done(function( msg ) {
-        $("#create_result_area").empty();
-        if(msg.status == "ok") {
-          $("#create_result_area").empty();
-          $("#create_result_area").text("Expense was added to database");
-          if($('#same_shopping').attr('checked')) {
-            //TODO clear some fields and reset selects
-          } else {
-            //TODO clear all fields and reset selects
-          }
-        } else if(msg.status == "error") {
-          $("#create_result_area").empty();
-          $("#create_result_area").text(msg.message);
-        }
-      });
-    }
-  });
+  if(needAjaxRequest) {
+    $( document ).ajaxStop(function() {
+      if(!ajaxStopExecuted) {
+        ajaxStopExecuted = true;
+        ajaxExpenseAdd(data);
+      }
+    });
+  } else {
+    ajaxExpenseAdd(data);
+  }
 
 });
 $("#criteria_form").submit(function(e){
@@ -362,7 +399,7 @@ $("#criteria_form").submit(function(e){
       var place = results[i][0].placeId.name;
       var comment = results[i][0].comment;
       var counter = i + 1;
-      string_result += "<tr><td class=\"rowNumber\">" + counter  + "</td><td class=\"rowDate\">" + format_date + "</td><td class=\"rowProduct\">" + product + "</td><td class=\"rowDescription\">" + description + "</td><td class=\"rowWeight\">" + weight + "</td><td class=\"rowPrice\">" + price + "</td><td class=\"rowQuantity\">" + quantity + "</td><td class=\"rowTotalPrice\">" + total_price + "</td><td class=\"rowTypeOfExpense\">" + type_of_expense + "</td><td class=\"rowPaymentMethod\">" + payment_method + "</td><td class=\"rowCategoryOfExpense\">" + category_of_expense + "</td><td class=\"rowPlace\">" + place + "</td><td class=\"rowComment\">" + comment + "</td>" + "<td><input type=\"radio\" name=\"edit\" value=\"" + id + "\"></td>" + "<td><input type=\"checkbox\" name=\"delete_checkbox\" value=\"" + id + "\"></td></tr>";
+      string_result += "<tr><td class=\"rowNumber\">" + counter  + "</td><td class=\"rowDate\">" + format_date + "</td><td data-id=\"" + product_id + "\" class=\"rowProduct\">" + product + "</td><td class=\"rowDescription\">" + description + "</td><td class=\"rowWeight\">" + weight + "</td><td class=\"rowPrice\">" + price + "</td><td class=\"rowQuantity\">" + quantity + "</td><td class=\"rowTotalPrice\">" + total_price + "</td><td data-id=\"" + type_of_expense_id + "\" class=\"rowTypeOfExpense\">" + type_of_expense + "</td><td data-id=\"" + payment_method_id + "\" class=\"rowPaymentMethod\">" + payment_method + "</td><td data-id=\"" + category_of_expense_id +"\" class=\"rowCategoryOfExpense\">" + category_of_expense + "</td><td data-id=\"" + place_id +"\" class=\"rowPlace\">" + place + "</td><td class=\"rowComment\">" + comment + "</td>" + "<td><input type=\"radio\" name=\"edit\" value=\"" + id + "\"></td>" + "<td><input type=\"checkbox\" name=\"delete_checkbox\" value=\"" + id + "\"></td></tr>";
     }
     string_result += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><button type=\"button\" id=\"delete_button\">Delete</button></td></tr>";
     $("#result_append_section table tbody tr:not(.table_header)").remove();
@@ -390,47 +427,28 @@ $(document).on("expenseTableReady", function(){
   $('input[name="edit"]').click(function(){
     var inputValue = $(this).val();
     $('#edit_expense_section').removeClass('hide');
+    $('#edit_expense .list_hint').each(function(){
+      var inputElement = $(this).siblings('input');
+      var leftpos = $(inputElement).position().left;
+      $(this).css('left', leftpos + 'px');
+    });
     $('#edit_datepicker3').val($(this).parent().parent().find('.rowDate').text());
     $('#edit_description').val($(this).parent().parent().find('.rowDescription').text());
     $('#edit_weight').val($(this).parent().parent().find('.rowWeight').text());
     $('#edit_price').val($(this).parent().parent().find('.rowPrice').text());
     $('#edit_quantity').val($(this).parent().parent().find('.rowQuantity').text());
-    var typeExpenseOption = $(this).parent().parent().find('.rowTypeOfExpense').text();
-    $('#edit_select_type_expense option').each(function(){
-      var optionValue = $(this).text();
-      if(optionValue == typeExpenseOption) {
-        $(this).prop('selected', true);
-      }
-    });
+
     $('#edit_type_expense').val($(this).parent().parent().find('.rowTypeOfExpense').text());
-    var paymentMethodOption = $(this).parent().parent().find('.rowPaymentMethod').text();
-    $('#edit_select_payment_method option').each(function(){
-      var optionValue = $(this).text();
-      if(optionValue == paymentMethodOption) {
-        $(this).prop('selected', true);
-      }
-    });
-    var expenseCategoryOption = $(this).parent().parent().find('.rowCategoryOfExpense').text();
-    $('#edit_select_expense_category option').each(function(){
-      var optionValue = $(this).text();
-      if(optionValue == expenseCategoryOption) {
-        $(this).prop('selected', true);
-      }
-    });
-    var purchasePlaceOption = $(this).parent().parent().find('.rowPlace').text();
-    $('#edit_select_purchase_place option').each(function(){
-      var optionValue = $(this).text();
-      if(optionValue == purchasePlaceOption) {
-        $(this).prop('selected', true);
-      }
-    });
-    var productOption = $(this).parent().parent().find('.rowProduct').text();
-    $('#edit_select_product option').each(function(){
-      var optionValue = $(this).text();
-      if(optionValue == productOption) {
-        $(this).prop('selected', true);
-      }
-    });
+    $('#edit_type_expense').attr('data-id', $(this).parent().parent().find('.rowTypeOfExpense').attr('data-id'));
+    $('#edit_payment_method').val($(this).parent().parent().find('.rowPaymentMethod').text());
+    $('#edit_payment_method').attr('data-id', $(this).parent().parent().find('.rowPaymentMethod').attr('data-id'));
+    $('#edit_product').val($(this).parent().parent().find('.rowProduct').text());
+    $('#edit_product').attr('data-id', $(this).parent().parent().find('.rowProduct').attr('data-id'));
+    $('#edit_expense_category').val($(this).parent().parent().find('.rowCategoryOfExpense').text());
+    $('#edit_expense_category').attr('data-id', $(this).parent().parent().find('.rowCategoryOfExpense').attr('data-id'));
+    $('#edit_purchase_place').val($(this).parent().parent().find('.rowPlace').text());
+    $('#edit_purchase_place').attr('data-id', $(this).parent().parent().find('.rowPlace').attr('data-id'));
+
     $('#edit_comment').val($(this).parent().parent().find('.rowComment').text());
     $('#edit_expenseId').val(inputValue);
   });
@@ -438,6 +456,7 @@ $(document).on("expenseTableReady", function(){
 
 $("#edit_expense").submit(function(e){
   e.preventDefault();
+  //TODO integrate with create function and make also in this step create products, categories, payments etc.
   console.log("wykonanie");
   var data = {};
   if($("#edit_datepicker3").val() != "") {
@@ -464,20 +483,20 @@ $("#edit_expense").submit(function(e){
     //TODO validation
     data.comment = $("#edit_comment").val();
   }
-  if($("#edit_select_product").val() != 0) {
-    data.product_id = $("#edit_select_product").val();
+  if($("#edit_product").attr('data-id') != 0) {
+    data.product_id = $("#edit_product").attr('data-id');
   }
-  if($("#edit_select_type_expense").val() != 0) {
-    data.type_of_expense_id = $("#edit_select_type_expense").val();
+  if($("#edit_type_expense").attr('data-id') != 0) {
+    data.type_of_expense_id = $("#edit_type_expense").attr('data-id');
   }
-  if($("#edit_select_payment_method").val() != 0) {
-    data.payment_method_id = $("#edit_select_payment_method").val();
+  if($("#edit_payment_method").attr('data-id') != 0) {
+    data.payment_method_id = $("#edit_payment_method").attr('data-id');
   }
-  if($("#edit_select_expense_category").val() != 0) {
-    data.category_of_expense_id = $("#edit_select_expense_category").val();
+  if($("#edit_expense_category").attr('data-id') != 0) {
+    data.category_of_expense_id = $("#edit_expense_category").attr('data-id');
   }
-  if($("#edit_select_purchase_place").val() != 0) {
-    data.place_id = $("#edit_select_purchase_place").val();
+  if($("#edit_purchase_place").attr('data-id') != 0) {
+    data.place_id = $("#edit_purchase_place").attr('data-id');
   }
   data.id = $("#edit_expenseId").val();
   $.ajax({

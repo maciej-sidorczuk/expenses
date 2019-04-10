@@ -29,77 +29,57 @@
     <div class="form_row">
       {% if mode == "create" %}
         <label for="{{productId}}">Start type product's name: </label>
-        <input type="text" name="{{productId}}" id="{{productId}}">
       {% endif %}
       {% if mode == "edit" %}
         <label for="{{productId}}">Product's name: </label>
       {% endif %}
-      <select id="{{selectProductId}}">
-        <option value="0">Create new</option>
-        {% for product in products %}
-          <option value="{{ product.id }}">{{ product.name }}</option>
-        {% endfor %}
-      </select>
+      <input data-id ="0" autocomplete="off" type="text" name="{{productId}}" id="{{productId}}">
+      <ul class="product_list list_hint">
+      </ul>
     </div>
     <div class="form_row">
       {% if mode == "create" %}
         <label for="{{typeExpenseId}}">Start type type expense: </label>
-        <input type="text" name="{{typeExpenseId}}" id="{{typeExpenseId}}">
       {% endif %}
       {% if mode == "edit" %}
         <label for="{{typeExpenseId}}">Type of expense: </label>
       {% endif %}
-      <select id="{{selectTypExpenseId}}">
-        <option value="0">Create new</option>
-        {% for type in expenseType %}
-          <option value="{{ type.id }}">{{ type.name }}</option>
-        {% endfor %}
-      </select>
+      <input data-id ="0" autocomplete="off" type="text" name="{{typeExpenseId}}" id="{{typeExpenseId}}">
+      <ul class="type_expense_list list_hint">
+      </ul>
     </div>
     <div class="form_row">
       {% if mode == "create" %}
         <label for="{{paymentMethodId}}">Start type payment method: </label>
-        <input type="text" name="{{paymentMethodId}}" id="{{paymentMethodId}}">
       {% endif %}
       {% if mode == "edit" %}
         <label for="{{paymentMethodId}}">Payment method: </label>
       {% endif %}
-      <select id="{{selectPaymentMethodId}}">
-        <option value="0">Create new</option>
-        {% for payment in paymentMethod %}
-          <option value="{{ payment.id }}">{{ payment.name }}</option>
-        {% endfor %}
-      </select>
+      <input data-id ="0" autocomplete="off" type="text" name="{{paymentMethodId}}" id="{{paymentMethodId}}">
+      <ul class="payment_method_list list_hint">
+      </ul>
     </div>
     <div class="form_row">
       {% if mode == "create" %}
         <label for="{{expenseCategoryId}}">Start type expense category: </label>
-        <input type="text" name="{{expenseCategoryId}}" id="{{expenseCategoryId}}">
       {% endif %}
       {% if mode == "edit" %}
         <label for="{{expenseCategoryId}}">Expense category: </label>
       {% endif %}
-      <select id="{{selectExpenseCategoryId}}">
-        <option value="0">Create new</option>
-        {% for expenseCat in expenseCategory %}
-          <option value="{{ expenseCat.id }}">{{ expenseCat.name }}</option>
-        {% endfor %}
-      </select>
+      <input data-id ="0" autocomplete="off" type="text" name="{{expenseCategoryId}}" id="{{expenseCategoryId}}">
+      <ul class="expense_category_list list_hint">
+      </ul>
     </div>
     <div class="form_row">
-    {% if mode == "create" %}
-        <label for="{{purchasePlaceId}}">Start type purchase place: </label>
-        <input type="text" name="{{purchasePlaceId}}" id="{{purchasePlaceId}}">
-    {% endif %}
-    {% if mode == "edit" %}
-      <label for="{{purchasePlaceId}}">Purchase place: </label>
-    {% endif %}
-      <select id="{{selectPurchasePlace}}">
-        <option value="0">Create new</option>
-        {% for place in purchasePlace %}
-          <option value="{{ place.id }}">{{ place.name }}</option>
-        {% endfor %}
-      </select>
+      {% if mode == "create" %}
+          <label for="{{purchasePlaceId}}">Start type purchase place: </label>
+      {% endif %}
+      {% if mode == "edit" %}
+        <label for="{{purchasePlaceId}}">Purchase place: </label>
+      {% endif %}
+      <input data-id ="0" autocomplete="off" type="text" name="{{purchasePlaceId}}" id="{{purchasePlaceId}}">
+      <ul class="purchase_place_list list_hint">
+      </ul>
     </div>
     {% if sameShopping == true %}
     <div class="form_row">
