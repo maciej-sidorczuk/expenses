@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Expense application - Your products{% endblock %}
+
+{% block scriptshead %}
+  <script src="{{ asset('js/datepicker/jquery-1.12.4.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<h2>Your products</h2>
+<div>
+  <form action="{{path('product_form_add')}}" method="POST">
+    <input type="submit" id="add_product" value="Add new product" />
+  </form>
+</div>
+<table>
+  <tbody>
+    <tr><th>Product</th><th>Edit</th><th>Delete</th></tr>
+      <form id="productForm" action="" method="POST">
+        {% for item in products %}
+          <tr><td>{{item.name}}</td><td><input type="radio" name="edit" value="{{item.id}}"></td><td><input type="checkbox" name="delete_checkbox" value="{{item.id}}" /></td></tr>
+        {% endfor %}
+      </form>
+        <tr><td></td><td></td><td><button type="button" id="delete_button">Delete</button></td></tr>
+  </tbody>
+</table>
+{% block scriptsbody %}
+    <script src="{{ asset('js/form.js') }}"></script>
+  {% endblock %}
+{% endblock %}

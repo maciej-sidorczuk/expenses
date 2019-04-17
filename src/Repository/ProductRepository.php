@@ -28,6 +28,13 @@ class ProductRepository extends ServiceEntityRepository
       return $query->execute();
     }
 
+    public function deleteAll($ids) {
+      $entityManager = $this->getEntityManager();
+      $stringQuery = 'DELETE FROM App\Entity\Product p WHERE p.id IN (:ids)';
+      $query = $entityManager->createQuery($stringQuery)->setParameter('ids', $ids);
+      return $query->execute();
+    }
+
 //    /**
 //     * @return Product[] Returns an array of Product objects
 //     */
