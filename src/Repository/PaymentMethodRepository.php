@@ -28,6 +28,13 @@ class PaymentMethodRepository extends ServiceEntityRepository
       return $query->execute();
     }
 
+    public function deleteAll($ids) {
+      $entityManager = $this->getEntityManager();
+      $stringQuery = 'DELETE FROM App\Entity\PaymentMethod p WHERE p.id IN (:ids)';
+      $query = $entityManager->createQuery($stringQuery)->setParameter('ids', $ids);
+      return $query->execute();
+    }
+
 //    /**
 //     * @return PaymentMethod[] Returns an array of PaymentMethod objects
 //     */

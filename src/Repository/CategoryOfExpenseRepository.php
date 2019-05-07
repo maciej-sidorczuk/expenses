@@ -28,6 +28,13 @@ class CategoryOfExpenseRepository extends ServiceEntityRepository
       return $query->execute();
     }
 
+    public function deleteAll($ids) {
+      $entityManager = $this->getEntityManager();
+      $stringQuery = 'DELETE FROM App\Entity\CategoryOfExpense p WHERE p.id IN (:ids)';
+      $query = $entityManager->createQuery($stringQuery)->setParameter('ids', $ids);
+      return $query->execute();
+    }
+
 //    /**
 //     * @return CategoryOfExpense[] Returns an array of CategoryOfExpense objects
 //     */

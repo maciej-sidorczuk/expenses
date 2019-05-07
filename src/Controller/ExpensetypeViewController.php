@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\TypeOfExpense;
 
 class ExpensetypeViewController extends AbstractController
 {
@@ -13,8 +14,9 @@ class ExpensetypeViewController extends AbstractController
      */
     public function index(Request $request)
     {
-        
-        return $this->render('typeofexpense/view.html.twig');
+      $repository = $this->getDoctrine()->getRepository(TypeOfExpense::class);
+      $typesOfExpense = $repository->findAll();
+      return $this->render('typeofexpense/view.html.twig', array('typesofexpense' => $typesOfExpense));
     }
 
 

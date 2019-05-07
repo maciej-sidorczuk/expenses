@@ -2,6 +2,29 @@
 
 {% block title %}Expense application - Your places{% endblock %}
 
+{% block scriptshead %}
+  <script src="{{ asset('js/lib/jquery-1.12.4.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 <h2>Your places</h2>
+<div>
+  <form action="{{path('place_form_add')}}" method="POST">
+    <input type="submit" id="add_place" value="Add new place" />
+  </form>
+</div>
+<table>
+  <tbody>
+    <tr><th>Type of expense</th><th>Edit</th><th>Delete</th></tr>
+      <form id="placeForm" action="" method="POST">
+        {% for item in places %}
+          <tr><td>{{item.name}}</td><td><input type="radio" name="edit" value="{{item.id}}"></td><td><input type="checkbox" name="delete_checkbox" value="{{item.id}}" /></td></tr>
+        {% endfor %}
+      </form>
+        <tr><td></td><td></td><td><button type="button" id="delete_button">Delete</button></td></tr>
+  </tbody>
+</table>
+{% block scriptsbody %}
+    <script src="{{ asset('js/placeForm.js') }}"></script>
+  {% endblock %}
 {% endblock %}

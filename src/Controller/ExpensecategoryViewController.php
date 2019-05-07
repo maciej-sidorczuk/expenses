@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\CategoryOfExpense;
 
 class ExpensecategoryViewController extends AbstractController
 {
@@ -13,7 +14,9 @@ class ExpensecategoryViewController extends AbstractController
      */
     public function index(Request $request)
     {
-        return $this->render('categoryofexpense/view.html.twig');
+      $repository = $this->getDoctrine()->getRepository(CategoryOfExpense::class);
+      $categoriesOfExpense = $repository->findAll();
+      return $this->render('categoryofexpense/view.html.twig', array('categoriesofexpense' => $categoriesOfExpense));
     }
 
 

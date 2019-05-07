@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Place;
 
 class PurchasePlaceViewController extends AbstractController
 {
@@ -13,7 +14,9 @@ class PurchasePlaceViewController extends AbstractController
      */
     public function index(Request $request)
     {
-        return $this->render('place/view.html.twig');
+        $repository = $this->getDoctrine()->getRepository(Place::class);
+        $places = $repository->findAll();
+        return $this->render('place/view.html.twig', array('places' => $places));
     }
 
 

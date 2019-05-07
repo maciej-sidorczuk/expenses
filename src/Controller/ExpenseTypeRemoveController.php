@@ -5,13 +5,13 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\CategoryOfExpense;
+use App\Entity\TypeOfExpense;
 use Doctrine\DBAL\DBALException;
 
-class ExpensecategoryRemoveController extends AbstractController
+class ExpenseTypeRemoveController extends AbstractController
 {
     /**
-     * @Route("/expensecategory/remove", name="expensecategory_remove")
+     * @Route("/expensetype/remove", name="expensetype_remove")
      */
      public function index(Request $request)
      {
@@ -19,27 +19,27 @@ class ExpensecategoryRemoveController extends AbstractController
          if(isset($id) && !empty($id)) {
            if(is_array($id)) {
              try {
-               $categoryOfExpense = $this->getDoctrine()
-               ->getRepository(CategoryOfExpense::class)
+               $typeOfExpense = $this->getDoctrine()
+               ->getRepository(TypeOfExpense::class)
                ->deleteAll($id);
              } catch(DBALException $e) {
-               return $this->json(array('status' => 'error', 'message' => 'Cannot remove expense category because there are expenses which contain this category. Consider remove these expenses/keep this category for historic purpose/edit expense category for new one'));
+               return $this->json(array('status' => 'error', 'message' => 'Cannot remove expense type because there are expenses which contain this type. Consider remove these expenses/keep this type for historic purpose/edit expense type for new one'));
              }
              return $this->json(array('status' => 'ok'));
            } else {
-             $categoryOfExpense = $this->getDoctrine()
-             ->getRepository(CategoryOfExpense::class)
+             $typeOfExpense = $this->getDoctrine()
+             ->getRepository(TypeOfExpense::class)
              ->find($id);
-             if(!$categoryOfExpense) {
+             if(!$typeOfExpense) {
                return $this->json(array('status' => 'error', 'message' => 'Object not found'));
              } else {
                $entityManager = $this->getDoctrine()->getManager();
                try {
-                 $entityManager->remove($categoryOfExpense);
+                 $entityManager->remove($typeOfExpense);
                  $entityManager->flush();
                  return $this->json(array('status' => 'ok'));
                } catch(DBALException $e) {
-                 return $this->json(array('status' => 'error', 'message' => 'Cannot remove expense category because there are expenses which contain this category. Consider remove these expenses/keep this category for historic purpose/edit expense category for new one'));
+                 return $this->json(array('status' => 'error', 'message' => 'Cannot remove expense type because there are expenses which contain this type. Consider remove these expenses/keep this type for historic purpose/edit expense type for new one'));
                }
 
              }

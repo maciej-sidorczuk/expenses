@@ -2,6 +2,29 @@
 
 {% block title %}Expense application - Your types of expenses{% endblock %}
 
+{% block scriptshead %}
+  <script src="{{ asset('js/lib/jquery-1.12.4.js') }}"></script>
+{% endblock %}
+
 {% block body %}
-<h2>Your types of expenses</h2>
+<h2>Your type of expenses</h2>
+<div>
+  <form action="{{path('type_of_expense_form_add')}}" method="POST">
+    <input type="submit" id="add_type_of_expense" value="Add new type of expense" />
+  </form>
+</div>
+<table>
+  <tbody>
+    <tr><th>Type of expense</th><th>Edit</th><th>Delete</th></tr>
+      <form id="typeOfExpenseForm" action="" method="POST">
+        {% for item in typesofexpense %}
+          <tr><td>{{item.name}}</td><td><input type="radio" name="edit" value="{{item.id}}"></td><td><input type="checkbox" name="delete_checkbox" value="{{item.id}}" /></td></tr>
+        {% endfor %}
+      </form>
+        <tr><td></td><td></td><td><button type="button" id="delete_button">Delete</button></td></tr>
+  </tbody>
+</table>
+{% block scriptsbody %}
+    <script src="{{ asset('js/typeOfExpenseForm.js') }}"></script>
+  {% endblock %}
 {% endblock %}

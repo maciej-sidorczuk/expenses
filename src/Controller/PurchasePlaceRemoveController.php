@@ -17,21 +17,32 @@ class PurchasePlaceRemoveController extends AbstractController
     {
         $id = $request->request->get('id');
         if(isset($id) && !empty($id)) {
-          $place = $this->getDoctrine()
-          ->getRepository(Place::class)
-          ->find($id);
-          if(!$place) {
-            return $this->json(array('status' => 'error', 'message' => 'Object not found'));
-          } else {
-            $entityManager = $this->getDoctrine()->getManager();
+          if(is_array($id)) {
             try {
-              $entityManager->remove($place);
-              $entityManager->flush();
-              return $this->json(array('status' => 'ok'));
+              $place = $this->getDoctrine()
+              ->getRepository(Place::class)
+              ->deleteAll($id);
             } catch(DBALException $e) {
               return $this->json(array('status' => 'error', 'message' => 'Cannot remove purchase place because there are expenses which contain this place. Consider remove these expenses/keep this purchase place for historic purpose/edit purchase product for new one'));
             }
+            return $this->json(array('status' => 'ok'));
+          } else {
+            $place = $this->getDoctrine()
+            ->getRepository(Place::class)
+            ->find($id);
+            if(!$place) {
+              return $this->json(array('status' => 'error', 'message' => 'Object not found'));
+            } else {
+              $entityManager = $this->getDoctrine()->getManager();
+              try {
+                $entityManager->remove($place);
+                $entityManager->flush();
+                return $this->json(array('status' => 'ok'));
+              } catch(DBALException $e) {
+                return $this->json(array('status' => 'error', 'message' => 'Cannot remove purchase place because there are expenses which contain this place. Consider remove these expenses/keep this purchase place for historic purpose/edit purchase product for new one'));
+              }
 
+            }
           }
         } else {
           return $this->json(array('status' => 'error', 'message' => 'Incorrect parameters'));

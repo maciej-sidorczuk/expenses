@@ -16,7 +16,6 @@ class ProductViewController extends AbstractController
     {
         $repository = $this->getDoctrine()->getRepository(Product::class);
         $products = $repository->findAll();
-        //file_put_contents('/var/www/mswydatki.pl/prodlog.log', print_r($products, true) . "\n", FILE_APPEND);
         return $this->render('product/view.html.twig', array('products' => $products));
     }
 

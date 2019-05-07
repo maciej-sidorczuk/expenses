@@ -28,6 +28,13 @@ class TypeOfExpenseRepository extends ServiceEntityRepository
       return $query->execute();
     }
 
+    public function deleteAll($ids) {
+      $entityManager = $this->getEntityManager();
+      $stringQuery = 'DELETE FROM App\Entity\TypeOfExpense p WHERE p.id IN (:ids)';
+      $query = $entityManager->createQuery($stringQuery)->setParameter('ids', $ids);
+      return $query->execute();
+    }
+
 //    /**
 //     * @return TypeOfExpense[] Returns an array of TypeOfExpense objects
 //     */
