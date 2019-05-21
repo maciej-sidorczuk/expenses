@@ -389,9 +389,12 @@ $("#criteria_form").submit(function(e){
       var product = results[i][0].productId.name;
       var description = results[i][0].description;
       var weight = results[i][0].weight;
+      weight = parseFloat(weight).toFixed(2);
       var price = results[i][0].price;
+      price = parseFloat(price).toFixed(2);
       var quantity = results[i][0].quantity;
       var total_price = results[i].total_price;
+      total_price = parseFloat(total_price).toFixed(2);
       var type_of_expense_id = results[i][0].typeOfExpenseId.id;
       var type_of_expense = results[i][0].typeOfExpenseId.name;
       var payment_method_id = results[i][0].paymentMethodId.id;
@@ -408,14 +411,14 @@ $("#criteria_form").submit(function(e){
     $("#result_append_section table tbody tr:not(.table_header)").remove();
     $(string_result).appendTo("#result_append_section table tbody");
     calculations_result += "<div class=\"info-stat\">Calculation statistics (" + timeinfo + "):</div>";
-    calculations_result += "<div class=\"single-stat\"><div class=\"flex-container\"><div class=\"stat-key\">" + "Sum of expenses: " + "</div><div class=\"stat-value\">" + calculations['total'] + "</div><div class=\"stat-percentage\">(" + (calculations['total']/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+    calculations_result += "<div class=\"single-stat\"><div class=\"flex-container\"><div class=\"stat-key\">" + "Sum of expenses: " + "</div><div class=\"stat-value\">" + calculations['total'].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (calculations['total']/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
     calculations_result += "</div>";
 
     calculations_result += "<div class=\"single-stat\"><div class=\"info\">Expense Categories: </div>";
     var categoryObject = calculations['categories'];
     for (var property in categoryObject) {
       if (categoryObject.hasOwnProperty(property)) {
-          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + categoryObject[property] + "</div><div class=\"stat-percentage\">(" + (categoryObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + categoryObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (categoryObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
       }
     }
     calculations_result += "</div>";
@@ -424,7 +427,7 @@ $("#criteria_form").submit(function(e){
     var typeOfExpenseObject = calculations['typeofexpense'];
     for (var property in typeOfExpenseObject ) {
       if (typeOfExpenseObject.hasOwnProperty(property)) {
-          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + typeOfExpenseObject[property] + "</div><div class=\"stat-percentage\">(" + (typeOfExpenseObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + typeOfExpenseObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (typeOfExpenseObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
       }
     }
     calculations_result += "</div>";
@@ -433,7 +436,7 @@ $("#criteria_form").submit(function(e){
     var placeObject = calculations['place'];
     for (var property in placeObject ) {
       if (placeObject.hasOwnProperty(property)) {
-          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + placeObject[property] + "</div><div class=\"stat-percentage\">(" + (placeObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + placeObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (placeObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
       }
     }
     calculations_result += "</div>";
@@ -442,7 +445,7 @@ $("#criteria_form").submit(function(e){
     var paymentMethodObject = calculations['paymentmethod'];
     for (var property in paymentMethodObject ) {
       if (paymentMethodObject.hasOwnProperty(property)) {
-          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + paymentMethodObject[property] + "</div><div class=\"stat-percentage\">(" + (paymentMethodObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + paymentMethodObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (paymentMethodObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
       }
     }
     calculations_result += "</div>";
