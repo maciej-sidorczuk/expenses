@@ -377,8 +377,11 @@ $("#criteria_form").submit(function(e){
   }).done(function( msg ) {
     if(msg.status == "ok") {
     var results = msg.content;
+    var calculations = msg.calculations;
+    var timeinfo = msg.timeinfo;
     var string_result = "";
-    for(var i = 0; i < results .length; i++) {
+    var calculations_result = "";
+    for(var i = 0; i < results.length; i++) {
       var id = results[i][0].id;
       var date = results[i][0].purchaseDate;
       var format_date = date.substring(0, 10);
@@ -404,6 +407,48 @@ $("#criteria_form").submit(function(e){
     string_result += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><button type=\"button\" id=\"delete_button\">Delete</button></td></tr>";
     $("#result_append_section table tbody tr:not(.table_header)").remove();
     $(string_result).appendTo("#result_append_section table tbody");
+    calculations_result += "<div class=\"info-stat\">Calculation statistics (" + timeinfo + "):</div>";
+    calculations_result += "<div class=\"single-stat\"><div class=\"flex-container\"><div class=\"stat-key\">" + "Sum of expenses: " + "</div><div class=\"stat-value\">" + calculations['total'] + "</div><div class=\"stat-percentage\">(" + (calculations['total']/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+    calculations_result += "</div>";
+
+    calculations_result += "<div class=\"single-stat\"><div class=\"info\">Expense Categories: </div>";
+    var categoryObject = calculations['categories'];
+    for (var property in categoryObject) {
+      if (categoryObject.hasOwnProperty(property)) {
+          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + categoryObject[property] + "</div><div class=\"stat-percentage\">(" + (categoryObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      }
+    }
+    calculations_result += "</div>";
+
+    calculations_result += "<div class=\"single-stat\"><div class=\"info\">Type of expense: </div>";
+    var typeOfExpenseObject = calculations['typeofexpense'];
+    for (var property in typeOfExpenseObject ) {
+      if (typeOfExpenseObject.hasOwnProperty(property)) {
+          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + typeOfExpenseObject[property] + "</div><div class=\"stat-percentage\">(" + (typeOfExpenseObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      }
+    }
+    calculations_result += "</div>";
+
+    calculations_result += "<div class=\"single-stat\"><div class=\"info\">Place: </div>";
+    var placeObject = calculations['place'];
+    for (var property in placeObject ) {
+      if (placeObject.hasOwnProperty(property)) {
+          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + placeObject[property] + "</div><div class=\"stat-percentage\">(" + (placeObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      }
+    }
+    calculations_result += "</div>";
+
+    calculations_result += "<div class=\"single-stat\"><div class=\"info\">Payment method: </div>";
+    var paymentMethodObject = calculations['paymentmethod'];
+    for (var property in paymentMethodObject ) {
+      if (paymentMethodObject.hasOwnProperty(property)) {
+          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + paymentMethodObject[property] + "</div><div class=\"stat-percentage\">(" + (paymentMethodObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      }
+    }
+    calculations_result += "</div>";
+
+    $("#calculations").empty();
+    $(calculations_result).appendTo("#calculations");
     changeSortingColumn('.date_sort');
     changeSortingColumn('.product_sort');
     changeSortingColumn('.description_sort');

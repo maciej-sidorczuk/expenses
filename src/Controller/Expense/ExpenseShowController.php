@@ -54,7 +54,8 @@ class ExpenseShowController extends AbstractController
               "comment" => $comment,
               "category_of_expense_id" => $category_of_expense_id
               ), "total_price" => $quantity*$price));
-            return $this->json(array('status' => 'ok', 'content' => $objects));
+            $calculations = $this->makeCalculations($objects);
+            return $this->json(array('status' => 'ok', 'content' => $objects, 'calculations' => $calculations));
           }
         } else {
           $where = '';
@@ -226,7 +227,18 @@ class ExpenseShowController extends AbstractController
               $expenses = $this->getDoctrine()
                 ->getRepository(Expense::class)
                 ->searchAll($query_string);
-              return $this->json(array('status' => 'ok', 'content' => $expenses));
+              $calculations = $this->makeCalculations($expenses);
+              $timeInfo = "";
+              if(isset($from_date)) {
+                $timeInfo .= "from " . $from_date . " ";
+              }
+              if(isset($to_date)) {
+                $timeInfo .= "to " . $to_date;
+              }
+              if(!isset($from_date) && !isset($to_date)) {
+                $timeInfo = "all time";
+              }
+              return $this->json(array('status' => 'ok', 'content' => $expenses, 'calculations' => $calculations, 'timeinfo' => $timeInfo));
             } else {
               $having = trim($having);
               $having = preg_replace("/\sAND$/", '', $having);
@@ -244,7 +256,18 @@ class ExpenseShowController extends AbstractController
               $expenses = $this->getDoctrine()
                 ->getRepository(Expense::class)
                 ->searchAll($query_string, $values_to_add);
-              return $this->json(array('status' => 'ok', 'content' => $expenses));
+          	  $calculations = $this->makeCalculations($expenses);
+              $timeInfo = "";
+              if(isset($from_date)) {
+                $timeInfo .= "from " . $from_date . " ";
+              }
+              if(isset($to_date)) {
+                $timeInfo .= "to " . $to_date;
+              }
+              if(!isset($from_date) && !isset($to_date)) {
+                $timeInfo .= "all time";
+              }
+              return $this->json(array('status' => 'ok', 'content' => $expenses, 'calculations' => $calculations, 'timeinfo' => $timeInfo));
             }
           } else {
             $where = trim($where);
@@ -269,11 +292,59 @@ class ExpenseShowController extends AbstractController
             $expenses = $this->getDoctrine()
               ->getRepository(Expense::class)
               ->searchByParams($query_string, $values_to_add, $limit);
-            return $this->json(array('status' => 'ok', 'content' => $expenses));
+            $calculations = $this->makeCalculations($expenses);
+            $timeInfo = "";
+            if(isset($from_date)) {
+              $timeInfo .= "from " . $from_date . " ";
+            }
+            if(isset($to_date)) {
+              $timeInfo .= "to " . $to_date;
+            }
+            if(!isset($from_date) && !isset($to_date)) {
+              $timeInfo .= "all time";
+            }
+            return $this->json(array('status' => 'ok', 'content' => $expenses, 'calculations' => $calculations, 'timeinfo' => $timeInfo));
           }
 
-
         }
-
+    }
+    private function makeCalculations($data) {
+      $calculationResult = array();
+      $calculationResult['total'] = 0;
+      $calculationResult['categories'] = array();
+      $calculationResult['typeofexpense'] = array();
+      $calculationResult['place'] = array();
+      $calculationResult['paymentmethod'] = array();
+      foreach($data as $singleData) {
+        foreach($singleData as $obj) {
+          if($obj instanceof Expense) {
+            $price = $obj->getPrice();
+            $quantity = $obj->getQuantity();
+            $sum = $price * $quantity;
+            $cat = $obj->getCategoryOfExpenseId()->getName();
+            $typeOfExpense = $obj->getTypeOfExpenseId()->getName();
+            $place = $obj->getPlaceId()->getName();
+            $paymentMethod = $obj->getPaymentMethodId()->getName();
+            $calculationResult['total'] += $sum;
+            if(!isset($calculationResult['categories'][$cat])) {
+              $calculationResult['categories'][$cat] = 0;
+            }
+            $calculationResult['categories'][$cat] += $sum;
+            if(!isset($calculationResult['typeofexpense'][$typeOfExpense])) {
+              $calculationResult['typeofexpense'][$typeOfExpense] = 0;
+            }
+            $calculationResult['typeofexpense'][$typeOfExpense] += $sum;
+            if(!isset($calculationResult['place'][$place])) {
+              $calculationResult['place'][$place] = 0;
+            }
+            $calculationResult['place'][$place] += $sum;
+            if(!isset($calculationResult['paymentmethod'][$paymentMethod])) {
+              $calculationResult['paymentmethod'][$paymentMethod] = 0;
+            }
+            $calculationResult['paymentmethod'][$paymentMethod] += $sum;
+          }
+        }
+      }
+      return $calculationResult;
     }
 }
