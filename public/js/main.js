@@ -496,8 +496,10 @@ jQuery("#export_csv_button").click(function(){
     $(this).css("margin", 0);
     $(this).removeAttr('id');
   });
+  $("#download_csv_form select[name=order]").val($("#criteria_form select#select_order").val());
+  $("#download_csv_form select[name=order_direction]").val($("#criteria_form select#select_order_direction").val());
   $("#download_csv_form").submit();
-  //$("#download_csv_form").empty();
+  $("#download_csv_form").empty();
 });
 //form scripts - end
 //edit form
