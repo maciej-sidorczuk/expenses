@@ -11,6 +11,7 @@ use App\Entity\PaymentMethod;
 use App\Entity\Place;
 use App\Entity\Product;
 use App\Entity\TypeOfExpense;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExpenseShowController extends AbstractController
 {
@@ -26,7 +27,51 @@ class ExpenseShowController extends AbstractController
           return $this->json(array('status' => $data['status'], 'content' => $data['content'], 'calculations' => $data['calculations'], 'timeinfo' => $data['timeinfo']));
         }
     }
-    
+
+    /**
+     * @Route("/expense/download", name="expense_download")
+     */
+    public function downloadExpense(Request $request)
+    {
+        $data = $this->getDataFromDB($request);
+        $fileContent = "l.p.;Purchase date;Product;Description;Weight;Price;Quantity;Total price;Type of expense;Payment method;Category of expense;Place;Comment" . "\n";
+        $counter = 0;
+        if(!empty($data)) {
+          foreach($data['content'] as $content) {
+            foreach($content as $obj) {
+              if($obj instanceof Expense) {
+                $counter++;
+                $purchaseDate = $obj->getPurchaseDate();
+                $productName = $obj->getProductId()->getName();
+                $description = $obj->getDescription();
+                $weight = $obj->getWeight();
+                $price = $obj->getPrice();
+                $quantity = $obj->getQuantity();
+                $sum = $price * $quantity;
+                $sum = $this->convertNumverValue($sum);
+                $price = $this->convertNumverValue($price);
+                $weight = $this->convertNumverValue($weight);
+                $cat = $obj->getCategoryOfExpenseId()->getName();
+                $typeOfExpense = $obj->getTypeOfExpenseId()->getName();
+                $place = $obj->getPlaceId()->getName();
+                $paymentMethod = $obj->getPaymentMethodId()->getName();
+                $comment = $obj->getComment();
+                $fileContent .= $counter . ";" . $purchaseDate->format("Y-m-d") . ";" . $productName . ";" . $description . ";" . $weight . ";" . $price . ";" . $quantity . ";" . $sum . ";" . $typeOfExpense . ";" . $paymentMethod . ";" . $cat . ";" . $place . ";" . $comment . "\n";
+              }
+            }
+          }
+        }
+        $fileName = "expenses.csv";
+        $response = new Response($fileContent);
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set("Content-Disposition", "attachment; filename=\"" . $fileName ."\"");
+        return $response;
+    }
+
+    private function convertNumverValue($numberValue) {
+      return str_replace(".", ",", str_replace(",", "", number_format(floatval($numberValue), 2)));
+    }
+
     private function makeCalculations($data) {
       $calculationResult = array();
       $calculationResult['total'] = 0;

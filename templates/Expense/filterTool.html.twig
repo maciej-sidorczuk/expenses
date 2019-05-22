@@ -94,7 +94,7 @@
     </div>
     <div>Order and order direction:</div>
     <div>
-      <select id="select_order">
+      <select id="select_order" name="select_order">
         <option value="purchase_date">Purchase date</option>
         <option value="product">Product</option>
         <option value="description">Description</option>
@@ -108,7 +108,7 @@
         <option value="place">Place</option>
         <option value="comment">Comment</option>
       </select>
-      <select id="select_order_direction">
+      <select id="select_order_direction" name="select_order_direction">
         <option value="ASC">ASC</option>
         <option value="DESC">DESC</option>
       </select>
@@ -142,3 +142,8 @@
   </table>
 </div>
 <div id="calculations"></div>
+<div class="download_button">
+  <form action="{{path('expense_download')}}" method="POST" id="download_csv_form">
+  </form>
+  <button id="export_csv_button" disabled>Export to CSV</button>
+</div>

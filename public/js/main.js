@@ -312,8 +312,8 @@ $("#create_expense").submit(function(e){
   }
 
 });
-$("#criteria_form").submit(function(e){
-  e.preventDefault();
+
+function getAndValidateDataFromCriteriaForm() {
   var data = {};
   if($("#datepicker1").val() != "") {
     data.from_date = $("#datepicker1").val();
@@ -372,7 +372,12 @@ $("#criteria_form").submit(function(e){
   data.order = $("#select_order").val();
   data.order_direction = $("#select_order_direction").val();
   data.place = purchasePlace_checkboxes;
+  return data;
+}
 
+$("#criteria_form").submit(function(e){
+  e.preventDefault();
+  var data = getAndValidateDataFromCriteriaForm();
   $.ajax({
     method: "POST",
     url: "/expense/show",
@@ -380,6 +385,11 @@ $("#criteria_form").submit(function(e){
   }).done(function( msg ) {
     if(msg.status == "ok") {
     var results = msg.content;
+    if(results.length >= 1) {
+      jQuery("#export_csv_button").prop('disabled', false);
+    } else {
+      jQuery("#export_csv_button").prop('disabled', true);
+    }
     var calculations = msg.calculations;
     var timeinfo = msg.timeinfo;
     var string_result = "";
@@ -470,6 +480,24 @@ $("#criteria_form").submit(function(e){
     $(document).trigger("expenseTableReady");
   }
 });
+});
+jQuery("#export_csv_button").click(function(){
+  $("#download_csv_form").empty();
+  $("#criteria_form :input").clone().appendTo("#download_csv_form");
+  $("#download_csv_form :input").each(function(){
+    if($(this).get(0).type == "submit") {
+      $(this).remove();
+    }
+    $(this).css("visibility", "hidden");
+    $(this).css("position", "absolute");
+    $(this).css("width", 0);
+    $(this).css("height", 0);
+    $(this).css("padding", 0);
+    $(this).css("margin", 0);
+    $(this).removeAttr('id');
+  });
+  $("#download_csv_form").submit();
+  //$("#download_csv_form").empty();
 });
 //form scripts - end
 //edit form
