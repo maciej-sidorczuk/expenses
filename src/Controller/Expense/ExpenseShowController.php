@@ -47,7 +47,11 @@ class ExpenseShowController extends AbstractController
                 $weight = $obj->getWeight();
                 $price = $obj->getPrice();
                 $quantity = $obj->getQuantity();
-                $sum = $price * $quantity;
+                if(empty($weight)) {
+                  $sum = $price * $quantity;
+                } else {
+                  $sum = $price * $weight;
+                }
                 $sum = $this->convertNumverValue($sum);
                 $price = $this->convertNumverValue($price);
                 $weight = $this->convertNumverValue($weight);
@@ -84,7 +88,12 @@ class ExpenseShowController extends AbstractController
           if($obj instanceof Expense) {
             $price = $obj->getPrice();
             $quantity = $obj->getQuantity();
-            $sum = $price * $quantity;
+            $weight = $obj->getWeight();
+            if(empty($weight)) {
+              $sum = $price * $quantity;
+            } else {
+              $sum = $price * $weight;
+            }
             $cat = $obj->getCategoryOfExpenseId()->getName();
             $typeOfExpense = $obj->getTypeOfExpenseId()->getName();
             $place = $obj->getPlaceId()->getName();
@@ -134,6 +143,11 @@ class ExpenseShowController extends AbstractController
           $comment = $expense->getComment();
           $category_of_expense_id = $expense->getCategoryOfExpenseId();
           $objects = array();
+          if(empty($weight)) {
+            $total_price = $quantity * $price;
+          } else {
+            $total_price = $quantity * $weight;
+          }
           array_push($objects, array("0" => array(
             "id" => $id,
             "purchaseDate" => $date,
@@ -147,7 +161,7 @@ class ExpenseShowController extends AbstractController
             "type_of_expense_id" => $type_of_expense_id,
             "comment" => $comment,
             "category_of_expense_id" => $category_of_expense_id
-            ), "total_price" => $quantity*$price));
+            ), "total_price" => $total_price));
           $calculations = $this->makeCalculations($objects);
           $dataFromDB['status'] = 'ok';
           $dataFromDB['content'] = $objects;
@@ -310,15 +324,15 @@ class ExpenseShowController extends AbstractController
 
         if($where == '') {
           if($having == '') {
-            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p' . $order_sql;
+            $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p' . $order_sql;
             if(isset($order)) {
               switch($order) {
-                case "product": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id' . $order_sql; break;
-                case "typeofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id' . $order_sql; break;
-                case "paymentmethod": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id' . $order_sql; break;
-                case "categoryofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id' . $order_sql; break;
-                case "place": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id' . $order_sql; break;
-                case "totalprice": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p ' . $order_sql; break;
+                case "product": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id' . $order_sql; break;
+                case "typeofexpense": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id' . $order_sql; break;
+                case "paymentmethod": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id' . $order_sql; break;
+                case "categoryofexpense": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id' . $order_sql; break;
+                case "place": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id' . $order_sql; break;
+                case "totalprice": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p ' . $order_sql; break;
               }
             }
             $expenses = $this->getDoctrine()
@@ -343,15 +357,15 @@ class ExpenseShowController extends AbstractController
           } else {
             $having = trim($having);
             $having = preg_replace("/\sAND$/", '', $having);
-            $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p HAVING ' . $having . $order_sql;
+            $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p HAVING ' . $having . $order_sql;
             if(isset($order)) {
               switch($order) {
-                case "product": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id HAVING ' . $having . $order_sql; break;
-                case "typeofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id HAVING ' . $having . $order_sql; break;
-                case "paymentmethod": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id HAVING ' . $having . $order_sql; break;
-                case "categoryofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id HAVING ' . $having . $order_sql; break;
-                case "place": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id HAVING ' . $having . $order_sql; break;
-                case "totalprice": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p  HAVING ' . $having . $order_sql; break;
+                case "product": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id HAVING ' . $having . $order_sql; break;
+                case "typeofexpense": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id HAVING ' . $having . $order_sql; break;
+                case "paymentmethod": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id HAVING ' . $having . $order_sql; break;
+                case "categoryofexpense": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id HAVING ' . $having . $order_sql; break;
+                case "place": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id HAVING ' . $having . $order_sql; break;
+                case "totalprice": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p  HAVING ' . $having . $order_sql; break;
               }
             }
             $expenses = $this->getDoctrine()
@@ -383,15 +397,15 @@ class ExpenseShowController extends AbstractController
           if($having != '') {
             $having = ' HAVING ' . $having;
           }
-          $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p' . $where . $having . $order_sql;
+          $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p' . $where . $having . $order_sql;
           if(isset($order)) {
             switch($order) {
-              case "product": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id' . $where . $having . $order_sql; break;
-              case "typeofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id' . $where . $having . $order_sql; break;
-              case "paymentmethod": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id' . $where . $having . $order_sql; break;
-              case "categoryofexpense": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id' . $where . $having . $order_sql; break;
-              case "place": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id' . $where . $having . $order_sql; break;
-              case "totalprice": $query_string = 'SELECT p, p.quantity * p.price AS total_price FROM App\Entity\Expense p ' . $where . $having . $order_sql; break;
+              case "product": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Product r WITH p.product_id = r.id' . $where . $having . $order_sql; break;
+              case "typeofexpense": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\TypeOfExpense s WITH p.type_of_expense_id = s.id' . $where . $having . $order_sql; break;
+              case "paymentmethod": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\PaymentMethod t WITH p.payment_method_id = t.id' . $where . $having . $order_sql; break;
+              case "categoryofexpense": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\CategoryOfExpense u WITH p.category_of_expense_id = u.id' . $where . $having . $order_sql; break;
+              case "place": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p INNER JOIN App\Entity\Place w WITH p.place_id = w.id' . $where . $having . $order_sql; break;
+              case "totalprice": $query_string = 'SELECT p, case when p.weight > 0 then p.weight * p.price else p.quantity * p.price end AS total_price FROM App\Entity\Expense p ' . $where . $having . $order_sql; break;
             }
           }
           $expenses = $this->getDoctrine()

@@ -58,7 +58,7 @@ class ExpenseAddController extends AbstractController
           return $this->json(array('status' => 'error', 'message' => 'Wrong expense\'s category value or you don\'t provide category of expense'));
         }
         if(!isset($weight) || $weight == "") {
-          $weight = null;
+          $weight = 0;
         } else {
           $weight = str_replace(",", ".", $weight);
           if(!is_numeric($weight)) {

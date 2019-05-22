@@ -71,13 +71,18 @@ class ExpenseEditController extends AbstractController
         $expense->setPrice($price);
       }
 
-      if(isset($weight) && $weight != "") {
+      if(isset($weight)) {
+        if($weight == "") {
+          $weight = 0;
+        }
         $weight = str_replace(",", ".", $weight);
         if(!is_numeric($weight)) {
           return $this->json(array('status' => 'error', 'message' => 'Weight is not a number value!'));
         }
-        $expense->setWeight($weight);
+      } else {
+        $weight = 0;
       }
+      $expense->setWeight($weight);
 
       if(isset($quantity) && $quantity != "") {
         $quantity_string = $quantity;
