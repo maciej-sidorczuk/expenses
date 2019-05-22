@@ -117,3 +117,7 @@
   height: 200px;
   overflow: auto;
 }
+table tr td {
+  padding: 0 10px 0 10px;
+  text-align: center;
+}
