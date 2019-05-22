@@ -300,7 +300,6 @@ class ExpenseShowController extends AbstractController
 
         $order = $request->request->get('order');
         $order_direction = $request->request->get('order_direction');
-        file_put_contents('/var/www/mswydatki.pl/debugkolej.log', 'order: ' . $order . " order_direction: " . $order_direction . "\n", FILE_APPEND);
         $order_sql = "";
 
         if(isset($order)) {
