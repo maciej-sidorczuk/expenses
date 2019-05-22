@@ -132,7 +132,10 @@ function searchElementbyAjax(elementName, searchUrl, formType) {
   var listClass = "." + elementName + "_list";
   $(createElement).keyup(function(){
     var element_string_name = $(createElement).val();
-    if(element_string_name.length > 1) {
+    if(element_string_name.length > 0) {
+      if(element_string_name.length == 1 && element_string_name != "*") {
+        return;
+      }
       $.ajax({
           method: "POST",
           url: searchUrl,

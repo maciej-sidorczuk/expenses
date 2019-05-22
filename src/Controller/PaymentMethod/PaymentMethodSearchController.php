@@ -16,7 +16,11 @@ class PaymentMethodSearchController extends AbstractController
     {
         $name = $request->request->get('name');
         if(isset($name) && !empty($name)) {
-          $query_string = 'SELECT p FROM App\Entity\PaymentMethod p WHERE p.name like \'%' . $name . '%\'';
+          if($name == "*") {
+            $query_string = 'SELECT p FROM App\Entity\PaymentMethod p WHERE p.name like \'%\'';
+          } else {
+            $query_string = 'SELECT p FROM App\Entity\PaymentMethod p WHERE p.name like \'%' . $name . '%\'';
+          }
           $payments = $this->getDoctrine()
             ->getRepository(PaymentMethod::class)
             ->searchByString($query_string);

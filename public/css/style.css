@@ -113,3 +113,7 @@
 #calculations .stat-percentage {
   padding-left: 5px;
 }
+.product_list {
+  height: 200px;
+  overflow: auto;
+}
