@@ -5,10 +5,12 @@
 {% block stylesheetshead %}
   <link rel="stylesheet" href="{{asset('css/datepicker/jquery-ui.css')}}">
   <link rel="stylesheet" href="{{asset('css/datepicker/style.css')}}">
+  <link rel="stylesheet" href="{{asset('css/lib/chartjs/Chart.min.css')}}">
 {% endblock %}
 {% block scriptshead %}
   <script src="{{ asset('js/lib/jquery-1.12.4.js') }}"></script>
   <script src="{{ asset('js/lib/jquery-ui.js') }}"></script>
+  <script src="{{ asset('js/lib/chartjs/Chart.min.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -76,7 +78,32 @@
   'mode' : 'edit'
   })
   }}
+  <div class="charts">
+    <div class="mainChartContainer">
+      <p class="chart-title">Total expenses vs time chart:</p>
+      <canvas id="mainChart"></canvas>
+    </div>
+    <div class="pieContainer">
+      <div class="pie">
+        <p class="chart-title">Expense category pie:</p>
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <div class="pie">
+        <p class="chart-title">Place pie:</p>
+        <canvas id="placeChart"></canvas>
+      </div>
+      <div class="pie">
+        <p class="chart-title">Type of expense pie:</p>
+        <canvas id="typeOfExpenseChart"></canvas>
+      </div>
+      <div class="pie">
+        <p class="chart-title">Payment method pie:</p>
+        <canvas id="paymentMethodChart"></canvas>
+      </div>
+    </div>
+  </div>
   {% block scriptsbody %}
     <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/myChartScripts.js') }}"></script>
   {% endblock %}
 {% endblock %}

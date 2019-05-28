@@ -374,7 +374,11 @@ function getAndValidateDataFromCriteriaForm() {
   data.place = purchasePlace_checkboxes;
   return data;
 }
-
+var data_for_chart;
+var data_for_category_chart;
+var data_for_place_chart;
+var data_for_typeOfExpense_chart;
+var data_for_paymentMethod_chart;
 $("#criteria_form").submit(function(e){
   e.preventDefault();
   var data = getAndValidateDataFromCriteriaForm();
@@ -394,6 +398,11 @@ $("#criteria_form").submit(function(e){
     var timeinfo = msg.timeinfo;
     var string_result = "";
     var calculations_result = "";
+    data_for_chart = new Map();
+    data_for_category_chart = new Map();
+    data_for_place_chart = new Map();
+    data_for_typeOfExpense_chart = new Map();
+    data_for_paymentMethod_chart = new Map();
     for(var i = 0; i < results.length; i++) {
       var id = results[i][0].id;
       var date = results[i][0].purchaseDate;
@@ -408,6 +417,13 @@ $("#criteria_form").submit(function(e){
       var quantity = results[i][0].quantity;
       var total_price = results[i].total_price;
       total_price = parseFloat(total_price).toFixed(2);
+      if(data_for_chart.has(format_date)) {
+        current_count_price = parseFloat(data_for_chart.get(format_date));
+        sum_price = current_count_price + parseFloat(total_price);
+        data_for_chart.set(format_date, sum_price.toFixed(2));
+      } else {
+        data_for_chart.set(format_date, total_price);
+      }
       var type_of_expense_id = results[i][0].typeOfExpenseId.id;
       var type_of_expense = results[i][0].typeOfExpenseId.name;
       var payment_method_id = results[i][0].paymentMethodId.id;
@@ -420,48 +436,58 @@ $("#criteria_form").submit(function(e){
       var counter = i + 1;
       string_result += "<tr><td class=\"rowNumber\">" + counter  + "</td><td class=\"rowDate\">" + format_date + "</td><td data-id=\"" + product_id + "\" class=\"rowProduct\">" + product + "</td><td class=\"rowDescription\">" + description + "</td><td class=\"rowWeight\">" + weight + "</td><td class=\"rowPrice\">" + price + "</td><td class=\"rowQuantity\">" + quantity + "</td><td class=\"rowTotalPrice\">" + total_price + "</td><td data-id=\"" + type_of_expense_id + "\" class=\"rowTypeOfExpense\">" + type_of_expense + "</td><td data-id=\"" + payment_method_id + "\" class=\"rowPaymentMethod\">" + payment_method + "</td><td data-id=\"" + category_of_expense_id +"\" class=\"rowCategoryOfExpense\">" + category_of_expense + "</td><td data-id=\"" + place_id +"\" class=\"rowPlace\">" + place + "</td><td class=\"rowComment\">" + comment + "</td>" + "<td><input type=\"radio\" name=\"edit\" value=\"" + id + "\"></td>" + "<td><input type=\"checkbox\" name=\"delete_checkbox\" value=\"" + id + "\"></td></tr>";
     }
-    string_result += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><button type=\"button\" id=\"delete_button\">Delete</button></td></tr>";
-    $("#result_append_section table tbody tr:not(.table_header)").remove();
-    $(string_result).appendTo("#result_append_section table tbody");
-    calculations_result += "<div class=\"info-stat\">Calculation statistics (" + timeinfo + "):</div>";
-    calculations_result += "<div class=\"single-stat\"><div class=\"flex-container\"><div class=\"stat-key\">" + "Sum of expenses: " + "</div><div class=\"stat-value\">" + calculations['total'].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (calculations['total']/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
-    calculations_result += "</div>";
+    console.log(data_for_chart);
+    if(results.length > 0) {
+      string_result += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><button type=\"button\" id=\"delete_button\">Delete</button></td></tr>";
+      $("#result_append_section table tbody tr:not(.table_header)").remove();
+      $(string_result).appendTo("#result_append_section table tbody");
+      calculations_result += "<div class=\"info-stat\">Calculation statistics (" + timeinfo + "):</div>";
+      calculations_result += "<div class=\"single-stat\"><div class=\"flex-container\"><div class=\"stat-key\">" + "Sum of expenses: " + "</div><div class=\"stat-value\">" + calculations['total'].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (calculations['total']/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      calculations_result += "</div>";
 
-    calculations_result += "<div class=\"single-stat\"><div class=\"info\">Expense Categories: </div>";
-    var categoryObject = calculations['categories'];
-    for (var property in categoryObject) {
-      if (categoryObject.hasOwnProperty(property)) {
-          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + categoryObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (categoryObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      calculations_result += "<div class=\"single-stat\"><div class=\"info\">Expense Categories: </div>";
+      var categoryObject = calculations['categories'];
+      for (var property in categoryObject) {
+        if (categoryObject.hasOwnProperty(property)) {
+            calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + categoryObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (categoryObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+            data_for_category_chart.set(property, categoryObject[property].toFixed(2));
+        }
       }
-    }
-    calculations_result += "</div>";
+      calculations_result += "</div>";
 
-    calculations_result += "<div class=\"single-stat\"><div class=\"info\">Type of expense: </div>";
-    var typeOfExpenseObject = calculations['typeofexpense'];
-    for (var property in typeOfExpenseObject ) {
-      if (typeOfExpenseObject.hasOwnProperty(property)) {
-          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + typeOfExpenseObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (typeOfExpenseObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      calculations_result += "<div class=\"single-stat\"><div class=\"info\">Type of expense: </div>";
+      var typeOfExpenseObject = calculations['typeofexpense'];
+      for (var property in typeOfExpenseObject ) {
+        if (typeOfExpenseObject.hasOwnProperty(property)) {
+            calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + typeOfExpenseObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (typeOfExpenseObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+            data_for_typeOfExpense_chart.set(property, typeOfExpenseObject[property].toFixed(2));
+        }
       }
-    }
-    calculations_result += "</div>";
+      calculations_result += "</div>";
 
-    calculations_result += "<div class=\"single-stat\"><div class=\"info\">Place: </div>";
-    var placeObject = calculations['place'];
-    for (var property in placeObject ) {
-      if (placeObject.hasOwnProperty(property)) {
-          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + placeObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (placeObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      calculations_result += "<div class=\"single-stat\"><div class=\"info\">Place: </div>";
+      var placeObject = calculations['place'];
+      for (var property in placeObject ) {
+        if (placeObject.hasOwnProperty(property)) {
+            calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + placeObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (placeObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+            data_for_place_chart.set(property, placeObject[property].toFixed(2));
+        }
       }
-    }
-    calculations_result += "</div>";
+      calculations_result += "</div>";
 
-    calculations_result += "<div class=\"single-stat\"><div class=\"info\">Payment method: </div>";
-    var paymentMethodObject = calculations['paymentmethod'];
-    for (var property in paymentMethodObject ) {
-      if (paymentMethodObject.hasOwnProperty(property)) {
-          calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + paymentMethodObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (paymentMethodObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+      calculations_result += "<div class=\"single-stat\"><div class=\"info\">Payment method: </div>";
+      var paymentMethodObject = calculations['paymentmethod'];
+      for (var property in paymentMethodObject ) {
+        if (paymentMethodObject.hasOwnProperty(property)) {
+            calculations_result += "<div class=\"flex-container\"><div class=\"stat-key\">" + property + ": </div><div class=\"stat-value\">" + paymentMethodObject[property].toFixed(2) + "</div><div class=\"stat-percentage\">(" + (paymentMethodObject[property]/calculations['total'] * 100).toFixed(2) + "%)</div></div>";
+            data_for_paymentMethod_chart.set(property, paymentMethodObject[property].toFixed(2));
+        }
       }
+      calculations_result += "</div>";
+    } else {
+      $("#result_append_section table tbody tr:not(.table_header)").remove();
+      calculations_result += "<div><p>No records were found</p></div>";
     }
-    calculations_result += "</div>";
 
     $("#calculations").empty();
     $(calculations_result).appendTo("#calculations");

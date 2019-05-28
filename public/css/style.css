@@ -121,3 +121,22 @@ table tr td {
   padding: 0 10px 0 10px;
   text-align: center;
 }
+.mainChartContainer {
+  width: 50%;
+}
+.pieContainer {
+  width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.charts {
+  display: flex;
+}
+.pie {
+  width: 50%;
+}
+.chart-title {
+  text-align: center;
+  font-weight: bold;
+  display: none;
+}
