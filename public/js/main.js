@@ -1,9 +1,32 @@
+function checkForOpenWindow() {
+  if(!($('.filter_section').hasClass('hide'))) {
+    return true;
+  }
+  if(!($('#create_new').hasClass('hide'))) {
+    return true;
+  }
+  if(!($('#edit_expense_section').hasClass('hide'))) {
+    return true;
+  }
+  return false;
+}
+
 //head icons functions
 $('.filter_tool').click(function(){
   $('.filter_section').toggleClass('hide');
+  if(checkForOpenWindow()) {
+    $('html').addClass('overlay');
+  } else {
+    $('html').removeClass('overlay');
+  }
 });
 $('.add_tool').click(function(){
   $('#create_new').toggleClass('hide');
+  if(checkForOpenWindow()) {
+    $('html').addClass('overlay');
+  } else {
+    $('html').removeClass('overlay');
+  }
   $('#create_new .list_hint').each(function(){
     var inputElement = $(this).siblings('input');
     var leftpos = $(inputElement).position().left;
@@ -13,10 +36,20 @@ $('.add_tool').click(function(){
 });
 $('.close_ico').click(function(){
   $(this).parent().toggleClass('hide');
+  if(checkForOpenWindow()) {
+    $('html').addClass('overlay');
+  } else {
+    $('html').removeClass('overlay');
+  }
   $("#edit_result_area").empty();
 });
 $('.close_ico_filter').click(function(){
   $(this).parent().parent().toggleClass('hide');
+  if(checkForOpenWindow()) {
+    $('html').addClass('overlay');
+  } else {
+    $('html').removeClass('overlay');
+  }
 });
 //head icons functions - end
 //date functions
@@ -534,6 +567,11 @@ $(document).on("expenseTableReady", function(){
   $('input[name="edit"]').click(function(){
     var inputValue = $(this).val();
     $('#edit_expense_section').removeClass('hide');
+    if(checkForOpenWindow()) {
+      $('html').addClass('overlay');
+    } else {
+      $('html').removeClass('overlay');
+    }
     $('#edit_expense .list_hint').each(function(){
       var inputElement = $(this).siblings('input');
       var leftpos = $(inputElement).position().left;
@@ -619,6 +657,7 @@ $("#edit_expense").submit(function(e){
       setTimeout(function(){
         $("#edit_result_area").empty();
         $('#edit_expense_section').addClass('hide');
+        $('html').toggleClass('overlay');
       }, 3000);
       //refresh table
       $("#criteria_form").submit();
@@ -627,7 +666,6 @@ $("#edit_expense").submit(function(e){
       $("#edit_result_area").text(msg.message);
     }
   });
-
 });
 //edit form - end
 //design
