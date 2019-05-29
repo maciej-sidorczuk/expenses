@@ -3,7 +3,8 @@ body {
 }
 .hide {
   opacity: 0;
-  transition: opacity 0.9s;
+  visibility: hidden;
+  transition: opacity 0.9s, visibility 0.9s;
 }
 .hide_arrows {
   display: none;
@@ -17,7 +18,7 @@ body {
   padding: 20px;
   border: 1px solid black;
   background-color: #fff;
-  transition: opacity 0.9s;
+  transition: opacity 0.9s, visibility 0.9s;
 }
 #create_new h2 {
   text-align: center;
@@ -42,7 +43,7 @@ body {
   max-height: 90vh;
   overflow: auto;
   background-color: #fff;
-  transition: opacity 0.9s;
+  transition: opacity 0.9s, visibility 0.9s;
 }
 .extended_section_filter {
   display: flex;
