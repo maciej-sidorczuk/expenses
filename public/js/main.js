@@ -693,5 +693,16 @@ $(document).ready(function(){
   $(window).scroll(function(){
     checkTopToolbar(startPos);
   });
+  $('html').click(function(e) {
+    if(!$(e.target).hasClass('list_hint')) {
+      if(!$(e.target).is('.form_row input')) {
+        $('.list_hint').empty();
+      } else {
+        if(!$(e.target).next().children().length > 0) {
+          $('.list_hint').empty();
+        }
+      }
+    }
+  });
 });
 //design - end
