@@ -30,6 +30,12 @@ body {
 }
 .form_row {
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.form_row label {
+  margin-right: 5px;
 }
 .filter_section {
   position: fixed;
@@ -78,7 +84,7 @@ body {
   margin-top: 10px;
 }
 .form_row input {
-  position: relative;
+  /*position: relative;*/
 }
 .list_hint {
   position: absolute;
@@ -87,6 +93,7 @@ body {
   list-style: none;
   padding-left: 0;
   margin: 0;
+  align-self: flex-start;
 }
 .info-stat {
   text-align: center;

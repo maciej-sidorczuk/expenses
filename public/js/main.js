@@ -28,9 +28,11 @@ $('.add_tool').click(function(){
     $('html').removeClass('overlay');
   }
   $('#create_new .list_hint').each(function(){
+    var parentHeight = $(this).parent().height();
     var inputElement = $(this).siblings('input');
     var leftpos = $(inputElement).position().left;
     $(this).css('left', leftpos + 'px');
+    $(this).css('top', parentHeight + 'px');
   });
   //$('.product_list').css('left', $('#create_product').position().left + 'px');
 });
@@ -573,8 +575,10 @@ $(document).on("expenseTableReady", function(){
       $('html').removeClass('overlay');
     }
     $('#edit_expense .list_hint').each(function(){
+      var parentHeight = $(this).parent().height();
       var inputElement = $(this).siblings('input');
       var leftpos = $(inputElement).position().left;
+      $(this).css('top', parentHeight + 'px');
       $(this).css('left', leftpos + 'px');
     });
     $('#edit_datepicker3').val($(this).parent().parent().find('.rowDate').text());
