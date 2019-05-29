@@ -630,3 +630,26 @@ $("#edit_expense").submit(function(e){
 
 });
 //edit form - end
+//design
+function checkTopToolbar(startPos) {
+  var windowTopPosition = $(window).scrollTop();
+  var toolBarPosition = $('#topToolbar').offset().top;
+  if($('#topToolbar').hasClass("fixedToolbar")) {
+    if(windowTopPosition < startPos) {
+      $('#topToolbar').removeClass("fixedToolbar");
+    }
+  } else {
+    if(windowTopPosition >= toolBarPosition) {
+      $('#topToolbar').addClass("fixedToolbar");
+    }
+  }
+}
+$(document).ready(function(){
+  var toolBarPosition = $('#topToolbar').offset().top;
+  var startPos = toolBarPosition;
+  checkTopToolbar(startPos);
+  $(window).scroll(function(){
+    checkTopToolbar(startPos);
+  });
+});
+//design - end

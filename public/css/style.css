@@ -1,3 +1,6 @@
+body {
+  /*margin: 0;*/
+}
 .hide {
   display: none;
 }
@@ -139,4 +142,13 @@ table tr td {
   text-align: center;
   font-weight: bold;
   display: none;
+}
+.fixedToolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border: 1px solid black;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
 }
